@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2d6a4f" />
+  <meta name="description" content="Pointage horaire agricole" />
+  <title>HorairesAgri</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ÉCRAN : CONNEXION -->
+  <div id="screen-login" class="screen active">
+    <div class="login-card">
+      <div class="app-logo">🌾</div>
+      <h1>HorairesAgri</h1>
+      <p class="subtitle">Suivi des heures agricoles</p>
+      <div class="form-group">
+        <label for="input-exploitation">ID Exploitation</label>
+        <input type="text" id="input-exploitation" placeholder="ex: GAEC-MARTIN-01" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label for="input-salarie">ID Salarié</label>
+        <input type="text" id="input-salarie" placeholder="ex: SAL-DUPONT-01" autocomplete="off" />
+      </div>
+      <button class="btn-primary" id="btn-login">Se connecter</button>
+      <p class="login-note">Tes identifiants sont fournis par ton employeur.<br>La première connexion crée ton compte.</p>
+    </div>
+  </div>
+
+  <!-- ÉCRAN : PRINCIPAL -->
+  <div id="screen-main" class="screen">
+
+    <header class="app-header">
+      <div class="header-left">
+        <span class="app-icon">🌾</span>
+        <span class="app-name">HorairesAgri</span>
+      </div>
+      <div class="header-right">
+        <span id="user-badge"></span>
+        <button class="btn-icon" id="btn-logout" title="Déconnexion">⏻</button>
+      </div>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="tab-today">Aujourd'hui</button>
+      <button class="tab-btn" data-tab="tab-history">Historique</button>
+      <button class="tab-btn" data-tab="tab-recap">Récap mensuel</button>
+    </nav>
+
+    <!-- ONGLET : AUJOURD'HUI -->
+    <div id="tab-today" class="tab-content active">
+      <div class="card">
+        <div class="card-date" id="today-date"></div>
+
+        <div class="time-row">
+          <div class="form-group">
+            <label>Heure d'arrivée</label>
+            <input type="time" id="time-start" />
+          </div>
+          <div class="form-group">
+            <label>Heure de départ</label>
+            <input type="time" id="time-end" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Pause déjeuner</label>
+          <div class="pause-selector">
+            <div class="pause-buttons">
+              <button class="pause-btn" data-minutes="0">Aucune</button>
+              <button class="pause-btn" data-minutes="15">15 min</button>
+              <button class="pause-btn active" data-minutes="30">30 min</button>
+              <button class="pause-btn" data-minutes="45">45 min</button>
+              <button class="pause-btn" data-minutes="60">1h</button>
+              <button class="pause-btn" data-minutes="90">1h30</button>
+            </div>
+            <div class="pause-custom">
+              <label for="pause-manual">Autre durée :</label>
+              <input type="number" id="pause-manual" placeholder="min" min="0" max="240" />
+              <span>min</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Note (optionnel)</label>
+          <input type="text" id="today-note" placeholder="ex: Travaux de taille, récolte..." />
+        </div>
+
+        <div class="total-display">
+          <span class="total-label">Temps travaillé</span>
+          <span class="total-value" id="total-value">–</span>
+        </div>
+
+        <button class="btn-primary" id="btn-save-today">Enregistrer la journée</button>
+      </div>
+    </div>
+
+    <!-- ONGLET : HISTORIQUE -->
+    <div id="tab-history" class="tab-content">
+      <div class="history-header">
+        <button class="btn-nav" id="hist-prev">◀</button>
+        <span id="hist-month-label"></span>
+        <button class="btn-nav" id="hist-next">▶</button>
+      </div>
+      <div id="history-list" class="history-list">
+        <p class="empty-msg">Chargement…</p>
+      </div>
+    </div>
+
+    <!-- ONGLET : RÉCAP -->
+    <div id="tab-recap" class="tab-content">
+      <div class="recap-header">
+        <button class="btn-nav" id="recap-prev">◀</button>
+        <span id="recap-month-label"></span>
+        <button class="btn-nav" id="recap-next">▶</button>
+      </div>
+      <div id="recap-summary" class="recap-summary">
+        <div class="summary-stat">
+          <span class="stat-label">Jours travaillés</span>
+          <span class="stat-value" id="recap-days">–</span>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-label">Total heures</span>
+          <span class="stat-value" id="recap-total">–</span>
+        </div>
+      </div>
+      <div id="recap-table-container"></div>
+      <button class="btn-primary" id="btn-export-pdf">📄 Télécharger le PDF</button>
+    </div>
+
+  </div>
+
+  <!-- MODAL MODIFIER -->
+  <div id="modal-edit" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>Modifier la journée</h2>
+      <div class="modal-date" id="modal-date-label"></div>
+      <div class="time-row">
+        <div class="form-group">
+          <label>Arrivée</label>
+          <input type="time" id="modal-start" />
+        </div>
+        <div class="form-group">
+          <label>Départ</label>
+          <input type="time" id="modal-end" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Pause (minutes)</label>
+        <input type="number" id="modal-pause" min="0" max="240" />
+      </div>
+      <div class="form-group">
+        <label>Note</label>
+        <input type="text" id="modal-note" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-danger" id="modal-delete">Supprimer</button>
+        <button class="btn-secondary" id="modal-cancel">Annuler</button>
+        <button class="btn-primary" id="modal-save">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
+</body>
+</html>
