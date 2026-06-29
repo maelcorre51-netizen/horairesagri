@@ -305,7 +305,7 @@ textarea{resize:vertical}
 
         <div style="overflow-x:auto">
           <table class="tbl">
-            <thead><tr><th>Date</th><th>Type</th><th>Arr.</th><th>Départ</th><th>Pause</th><th>Total</th></tr></thead>
+            <thead><tr><th>Date</th><th>Type</th><th>Arr.</th><th>Fin M.</th><th>Déb.AM</th><th>Fin AM</th><th>Pause</th><th>Total</th></tr></thead>
             <tbody id="r-tbody"></tbody>
           </table>
         </div>
@@ -766,19 +766,22 @@ window.renderRecap=function(){
 
   // Tableau
   const tb=document.getElementById('r-tbody');
-  if(!liste.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:14px">Aucune journée ce mois-ci</td></tr>';return;}
+  if(!liste.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:14px">Aucune journée ce mois-ci</td></tr>';return;}
   tb.innerHTML=liste.map(p=>{
     const t=TYPES[p.type||'travail'];
-    const arrivee=p.type==='travail'?(p.arriveeMatin||'—'):'';
-    const depart=p.type==='travail'?(p.finAM||p.finMatin||'—'):'';
-    const pause=p.type==='travail'?minToHM(p.pauseMin):'';
-    const total=p.type==='travail'?minToHM(p.totalMin):(p.type==='ecole'&&hasEcoleConfig()?minToHM(ecoleMinParJour()):'');
+    const isTravail=p.type==='travail'||!p.type;
+    const arrivee=isTravail?(p.arriveeMatin||'—'):'';
+    const finMatin=isTravail?(p.finMatin||'—'):'';
+    const debutAM=isTravail?(p.debutAM||'—'):'';
+    const finAM=isTravail?(p.finAM||'—'):'';
+    const pause=isTravail?minToHM(p.pauseMin):'';
+    const total=isTravail?minToHM(p.totalMin):(p.type==='ecole'&&hasEcoleConfig()?minToHM(ecoleMinParJour()):'');
     return `<tr>
       <td>${fmtDate(p.date)}</td>
-      <td><span class="hist-badge ${t.badge}" style="font-size:9px">${t.emoji}</span></td>
-      <td>${arrivee}</td><td>${depart}</td><td>${pause}</td><td><strong>${total}</strong></td>
+      <td><span class="hist-badge ${t.badge}" style="font-size:9px">${t.label}</span></td>
+      <td>${arrivee}</td><td>${finMatin}</td><td>${debutAM}</td><td>${finAM}</td><td>${pause}</td><td><strong>${total}</strong></td>
     </tr>`;
-  }).join('')+`<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td></td><td>${minToHM(totalTravailMin)}${hasEcoleConfig()&&ecole.length?' + '+minToHM(totalEcoleMin):''}</td></tr>`;
+  }).join('')+`<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td></td><td></td><td></td><td>${minToHM(totalTravailMin)}${hasEcoleConfig()&&ecole.length?' + '+minToHM(totalEcoleMin):''}</td></tr>`;
 }
 
 // ── PDF ───────────────────────────────────────────────────────
@@ -839,10 +842,22 @@ async function construirePDF(){
 
   // Tableau
   const rows=liste.map(p=>{
-    const t=TYPES[p.type||'travail'];
-    return [fmtDate(p.date), t.emoji+' '+t.label, p.arriveeMatin||'', p.finAM||p.finMatin||'', p.type==='travail'?minToHM(p.pauseMin):'', p.type==='travail'?minToHM(p.totalMin):(p.type==='ecole'&&hasEcoleConfig()?minToHM(ecoleMinParJour()):''), p.commentaire||''];
+    const isTravail=p.type==='travail'||!p.type;
+    const typeLabel=isTravail?'Travail':p.type==='ecole'?'Ecole':p.type==='conges'?'Conges':'Absence';
+    return [
+      fmtDate(p.date),
+      typeLabel,
+      isTravail?(p.arriveeMatin||''):'',
+      isTravail?(p.finMatin||''):'',
+      isTravail?(p.debutAM||''):'',
+      isTravail?(p.finAM||''):'',
+      isTravail?minToHM(p.pauseMin):'',
+      isTravail?minToHM(p.totalMin):(p.type==='ecole'&&hasEcoleConfig()?minToHM(ecoleMinParJour()):''),
+      p.commentaire||''
+    ];
   });
-  pdf.autoTable({startY:ys,margin:{left:14,right:14},head:[['Date','Type','Arrivée','Départ','Pause','Total','Note']],body:rows,styles:{fontSize:8.5,cellPadding:2,halign:'center'},columnStyles:{0:{halign:'left'},1:{halign:'left'},6:{halign:'left',cellWidth:30}},headStyles:{fillColor:blue,textColor:[255,255,255],fontStyle:'bold',fontSize:8}});
+  rows.push(['TOTAL','','','','','','',minToHM(totalTravailMin)+(hasEcoleConfig()&&ecole.length?' + '+minToHM(totalEcoleMin):''),'']);
+  pdf.autoTable({startY:ys,margin:{left:14,right:14},head:[['Date','Type','Arrivée','Fin matin','Déb. AM','Fin AM','Pause','Total','Note']],body:rows,styles:{fontSize:8,cellPadding:2,halign:'center'},columnStyles:{0:{halign:'left'},1:{halign:'left'},8:{halign:'left',cellWidth:25}},headStyles:{fillColor:blue,textColor:[255,255,255],fontStyle:'bold',fontSize:8},didParseCell:(d)=>{if(d.row.index===rows.length-1){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[219,234,254];}}});
 
   let yf=pdf.lastAutoTable.finalY+14;
   pdf.setTextColor(...grey); pdf.setFontSize(9);
