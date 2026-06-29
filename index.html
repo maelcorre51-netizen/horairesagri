@@ -67,9 +67,9 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 
 /* TYPE SELECTOR */
 .type-selector{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
-.type-btn{border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 4px;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.15s;font-family:'DM Sans',sans-serif}
-.type-btn span.emoji{font-size:20px}
-.type-btn span.label{font-size:10px;font-weight:600;color:var(--text2)}
+.type-btn{border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:7px 4px;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.type-btn span.emoji{font-size:16px}
+.type-btn span.label{font-size:9px;font-weight:600;color:var(--text2)}
 .type-btn.active-travail{background:#dbeafe;border-color:#1e3a5f;} .type-btn.active-travail span.label{color:#1e3a5f}
 .type-btn.active-ecole{background:#fef9c3;border-color:#a16207;} .type-btn.active-ecole span.label{color:#a16207}
 .type-btn.active-conges{background:#dcfce7;border-color:#15803d;} .type-btn.active-conges span.label{color:#15803d}
@@ -721,13 +721,14 @@ function renderHistorique(){
   if(!S.pointages.length){el.innerHTML='<div class="hint" style="color:var(--text2)">Aucun pointage pour le moment.</div>';return;}
   el.innerHTML=S.pointages.slice(0,30).map(p=>{
     const t=TYPES[p.type||'travail'];
-    const val=p.type==='travail'?minToHM(p.totalMin):(p.type==='absence'?(p.motif||''):'');
+    const isTravail=p.type==='travail'||!p.type;
+    const val=isTravail?minToHM(p.totalMin):'';
     return `<div class="hist-item">
       <div class="hist-type-dot ${t.dot}" style="margin-top:5px"></div>
       <div style="flex:1;min-width:0">
-        <span class="hist-badge ${t.badge}">${t.emoji} ${t.label}</span>
+        <span class="hist-badge ${t.badge}" style="font-size:9px;padding:1px 6px">${t.label}</span>
         <div class="hist-main">${fmtDate(p.date)}</div>
-        ${p.type==='travail'?`<div class="hist-sub">${p.arriveeMatin||'—'} → ${p.finMatin||'—'} · ${p.debutAM||'—'} → ${p.finAM||'—'}${p.pauseMin?' · pause '+minToHM(p.pauseMin):''}</div>`:''}
+        ${isTravail?`<div class="hist-sub">Matin : ${p.arriveeMatin||'—'} → ${p.finMatin||'—'}</div><div class="hist-sub">AM : ${p.debutAM||'—'} → ${p.finAM||'—'}${p.pauseMin?' · pause '+minToHM(p.pauseMin):''}</div>`:''}
         ${p.commentaire?`<div class="hist-sub" style="color:var(--text3)">${escHtml(p.commentaire)}</div>`:''}
       </div>
       <div class="hist-val">${val}</div>
