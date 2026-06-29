@@ -31,11 +31,27 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overscroll-behavior:none}
 .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+
+/* LOGIN */
+.login-screen{display:none;min-height:100vh;background:var(--accent);align-items:center;justify-content:center;padding:20px}
+.login-screen.active{display:flex}
+.login-card{background:var(--surface);border-radius:var(--radius);padding:28px 24px;width:100%;max-width:360px;box-shadow:var(--shadow-md)}
+.login-logo{font-size:40px;text-align:center;margin-bottom:8px}
+.login-title{font-size:20px;font-weight:600;color:var(--text);text-align:center;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px}
+.login-tabs{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden}
+.login-tab{flex:1;padding:9px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif}
+.login-tab.active{background:var(--accent);color:#fff}
+.login-error{background:var(--red-light);color:var(--red);font-size:12px;padding:8px 11px;border-radius:var(--radius-sm);margin-bottom:12px;display:none}
+.login-error.show{display:block}
+.login-forgot{font-size:12px;color:var(--accent);text-align:right;margin-top:4px;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;width:100%}
+
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
 .topbar-brand{display:flex;align-items:center;gap:8px}
 .topbar-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .topbar-title{font-size:15px;font-weight:600;color:var(--text)}
 .topbar-sub{font-size:11px;color:var(--text2);font-family:'DM Mono',monospace}
+.topbar-logout{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px}
 .nav{display:flex;background:var(--surface);border-top:1px solid var(--border);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:50;box-shadow:0 -1px 3px rgba(0,0,0,0.06)}
 .nav-btn{flex:1;padding:8px 2px 10px;border:none;background:none;font-size:10px;font-family:'DM Sans',sans-serif;color:var(--text3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color 0.15s;font-weight:500}
 .nav-btn i{font-size:20px}
@@ -51,11 +67,10 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .stat{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border)}
 .stat-label{font-size:10px;color:var(--text3);margin-bottom:3px;font-family:'DM Mono',monospace;font-weight:500}
 .stat-val{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.02em}
-.stat-val.blue{color:var(--accent)}.stat-val.amber{color:var(--amber)}.stat-val.green{color:var(--green)}
-.stat-sub{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
+.stat-val.blue{color:var(--accent)}
 .form-group{margin-bottom:11px}
 .form-label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block;font-weight:500}
-select,input[type=number],input[type=text],input[type=date],input[type=time],input[type=month],input[type=email],input[type=tel]{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);transition:border-color 0.15s}
+select,input[type=number],input[type=text],input[type=date],input[type=time],input[type=month],input[type=email],input[type=tel],input[type=password]{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);transition:border-color 0.15s}
 select:focus,input:focus{outline:none;border-color:var(--accent)}
 textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);resize:vertical}
 .time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -80,10 +95,8 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 .icon-btn:hover{background:var(--bg2)}
 .icon-btn.danger:hover{color:var(--red);border-color:rgba(153,27,27,0.3)}
 .alert{font-size:12px;padding:8px 11px;border-radius:var(--radius-sm);margin-bottom:8px;font-weight:500;display:flex;gap:6px;align-items:flex-start}
-.alert.warn{background:var(--amber-light);color:var(--amber)}
 .alert.ok{background:var(--green-light);color:var(--green)}
 .alert.info{background:var(--accent-light);color:var(--accent)}
-.divider{height:1px;background:var(--border);margin:8px 0}
 .tbl{width:100%;border-collapse:collapse;font-size:11px}
 .tbl th{font-size:9px;color:var(--text3);font-weight:600;text-align:center;padding:0 2px 8px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;white-space:nowrap}
 .tbl th:first-child{text-align:left}
@@ -93,19 +106,16 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 .tbl tr.total-row td{font-weight:600;border-top:2px solid var(--border2)}
 .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;font-family:'DM Mono',monospace}
 .badge.actif{background:var(--green-light);color:var(--green)}
-.badge.id{background:var(--bg2);color:var(--text2)}
 .entreprise-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:8px}
 .entreprise-row:last-child{border-bottom:none}
 .entreprise-info{flex:1;min-width:0}
-.entreprise-nom{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entreprise-nom{font-size:14px;font-weight:600;color:var(--text)}
 .entreprise-detail{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px;color:var(--text2);font-size:13px}
 .spinner{width:28px;height:28px;border:2px solid var(--bg3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:var(--shadow-md);max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.offline-banner{background:var(--amber);color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:500;display:none}
-.offline-banner.show{display:block}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.active{display:flex}
 .modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:400px;box-shadow:var(--shadow-md);margin:auto}
@@ -117,8 +127,39 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="offline-banner" id="offline-banner">📵 Hors ligne — synchronisation à la reconnexion</div>
+
+<!-- ÉCRAN CONNEXION -->
+<div class="login-screen active" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">⏱️</div>
+    <div class="login-title">Pointage Horaires</div>
+    <div class="login-sub">Suivi des heures agricoles</div>
+    <div class="login-tabs">
+      <button class="login-tab active" id="tab-connexion" onclick="switchLoginTab('connexion')">Se connecter</button>
+      <button class="login-tab" id="tab-inscription" onclick="switchLoginTab('inscription')">Créer un compte</button>
+    </div>
+    <div class="login-error" id="login-error"></div>
+
+    <!-- CONNEXION -->
+    <div id="form-connexion">
+      <div class="form-group"><label class="form-label">Email</label><input type="email" id="l-email" placeholder="mon@email.fr"></div>
+      <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" id="l-mdp" placeholder="••••••••"></div>
+      <button class="btn btn-primary" onclick="seConnecter()" style="margin-top:8px"><i class="ti ti-login"></i> Se connecter</button>
+      <button class="login-forgot" onclick="reinitialiserMdp()">Mot de passe oublié ?</button>
+    </div>
+
+    <!-- INSCRIPTION -->
+    <div id="form-inscription" style="display:none">
+      <div class="form-group"><label class="form-label">Votre nom complet</label><input type="text" id="i-nom" placeholder="ex : Jean Dupont"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" id="i-email" placeholder="mon@email.fr"></div>
+      <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" id="i-mdp" placeholder="minimum 6 caractères"></div>
+      <button class="btn btn-primary" onclick="sInscrire()" style="margin-top:8px"><i class="ti ti-user-plus"></i> Créer mon compte</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPLI PRINCIPALE -->
+<div class="app" id="main-app" style="display:none">
   <div class="topbar">
     <div class="topbar-brand">
       <div class="topbar-icon">⏱️</div>
@@ -127,15 +168,15 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
         <div class="topbar-sub" id="topbar-sub">Chargement...</div>
       </div>
     </div>
+    <button class="topbar-logout" onclick="seDeconnecter()" title="Déconnexion"><i class="ti ti-logout"></i></button>
   </div>
 
   <div class="screens">
-    <!-- SAISIE DU JOUR -->
+    <!-- SAISIE -->
     <div class="screen active" id="screen-saisie">
       <div class="card" style="margin-top:4px">
         <div class="card-title" id="form-title">Saisir une journée</div>
         <div class="form-group"><label class="form-label">Date</label><input type="date" id="f-date"></div>
-        <div class="form-group" id="f-exploit-wrap" style="display:none"><label class="form-label">Exploitation</label><select id="f-exploit"></select></div>
         <div class="card-title" style="margin-top:6px">Matin</div>
         <div class="time-grid">
           <div class="form-group"><label class="form-label">Arrivée</label><input type="time" id="f-arrivee-matin" oninput="recalc()"></div>
@@ -146,7 +187,7 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
           <div class="form-group"><label class="form-label">Début</label><input type="time" id="f-debut-am" oninput="recalc()"></div>
           <div class="form-group"><label class="form-label">Fin de journée</label><input type="time" id="f-fin-am" oninput="recalc()"></div>
         </div>
-        <div class="hint" id="recalc-hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi ».</div>
+        <div class="hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi ».</div>
         <div class="form-group" style="margin-top:8px"><label class="form-label">Commentaire (optionnel)</label><textarea id="f-commentaire" rows="2" placeholder="ex : récolte parcelle Nord..."></textarea></div>
         <div id="recap-jour" style="margin-top:6px"></div>
         <button class="btn btn-primary" id="btn-save" onclick="saveJour()"><i class="ti ti-check"></i> Enregistrer</button>
@@ -158,11 +199,10 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
       </div>
     </div>
 
-    <!-- RECAP MENSUEL -->
+    <!-- RECAP -->
     <div class="screen" id="screen-recap">
       <div class="card" style="margin-top:4px">
         <div class="form-group"><label class="form-label">Mois</label><input type="month" id="r-mois" onchange="renderRecap()"></div>
-        <div class="form-group" id="r-exploit-wrap" style="display:none"><label class="form-label">Exploitation</label><select id="r-exploit" onchange="renderRecap()"></select></div>
         <div class="stat-row">
           <div class="stat"><div class="stat-label">Total travaillé</div><div class="stat-val blue" id="r-total">0h00</div></div>
           <div class="stat"><div class="stat-label">Jours pointés</div><div class="stat-val" id="r-jours">0</div></div>
@@ -184,34 +224,21 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 
     <!-- CONFIG -->
     <div class="screen" id="screen-config">
-
-      <!-- PROFIL SALARIÉ -->
       <div class="card" style="margin-top:4px">
         <div class="card-header">
           <div class="card-title">Mon profil salarié</div>
           <button class="btn btn-secondary btn-sm" onclick="ouvrirModalSalarie()"><i class="ti ti-pencil"></i> Modifier</button>
         </div>
-        <div id="config-salarie-affichage">
-          <div class="loading"><div class="spinner"></div></div>
-        </div>
+        <div id="config-salarie-affichage"><div class="loading"><div class="spinner"></div></div></div>
       </div>
-
-      <!-- EXPLOITATIONS -->
       <div class="card">
         <div class="card-title">Exploitations</div>
-        <div id="entreprise-list"><div class="loading"><div class="spinner"></div>Chargement...</div></div>
+        <div id="entreprise-list"><div class="loading"><div class="spinner"></div></div></div>
       </div>
-
-      <!-- CRÉER UNE EXPLOITATION -->
       <div class="card">
         <div class="card-title">Créer une nouvelle exploitation</div>
-        <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="c-nom-entreprise" placeholder="ex : EARL Dupont"></div>
+        <div class="form-group"><label class="form-label">Nom</label><input type="text" id="c-nom-entreprise" placeholder="ex : EARL Dupont"></div>
         <button class="btn btn-success" onclick="creerEntreprise()"><i class="ti ti-plus"></i> Créer</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">À propos</div>
-        <div class="hint" style="color:var(--text2)">Vos données sont stockées en ligne (Firebase) et accessibles sur tous vos appareils via votre ID salarié.</div>
       </div>
     </div>
   </div>
@@ -223,46 +250,17 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
   </div>
 </div>
 
-<!-- ONBOARDING -->
-<div class="modal-overlay" id="onboard-overlay">
-  <div class="modal">
-    <div class="modal-title">👋 Bienvenue</div>
-    <div class="modal-body">Entrez vos informations pour commencer. Vous pourrez tout modifier plus tard.</div>
-    <div class="section-label">Votre profil</div>
-    <div class="form-group"><label class="form-label">Votre nom complet</label><input type="text" id="ob-nom-salarie" placeholder="ex : Jean Dupont"></div>
-    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ob-adresse-salarie" placeholder="ex : 12 rue des Lilas"></div>
-    <div class="time-grid">
-      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ob-cp-salarie" placeholder="ex : 51000"></div>
-      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ob-ville-salarie" placeholder="ex : Châlons"></div>
-    </div>
-    <div class="form-group"><label class="form-label">Email</label><input type="email" id="ob-email-salarie" placeholder="ex : jean@email.fr"></div>
-    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ob-tel-salarie" placeholder="ex : 06 12 34 56 78"></div>
-    <div class="section-label">Exploitation</div>
-    <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="ob-nom-entreprise" placeholder="ex : EARL Dupont"></div>
-    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ob-adresse-entreprise" placeholder="ex : Route de la Ferme"></div>
-    <div class="time-grid">
-      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ob-cp-entreprise" placeholder="ex : 51000"></div>
-      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ob-ville-entreprise" placeholder="ex : Châlons"></div>
-    </div>
-    <div class="form-group"><label class="form-label">Nom du gérant</label><input type="text" id="ob-gerant-entreprise" placeholder="ex : Marie Dupont"></div>
-    <div class="form-group"><label class="form-label">Email du gérant</label><input type="email" id="ob-email-entreprise" placeholder="ex : marie@earl.fr"></div>
-    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ob-tel-entreprise" placeholder="ex : 03 26 12 34 56"></div>
-    <button class="btn btn-primary" onclick="finOnboarding()" style="margin-top:8px"><i class="ti ti-check"></i> Commencer</button>
-  </div>
-</div>
-
 <!-- MODAL MODIFIER SALARIÉ -->
 <div class="modal-overlay" id="modal-salarie-overlay">
   <div class="modal">
-    <div class="modal-title">✏️ Modifier mon profil</div>
-    <div class="form-group"><label class="form-label">Nom complet</label><input type="text" id="ms-nom" placeholder="ex : Jean Dupont"></div>
-    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ms-adresse" placeholder="ex : 12 rue des Lilas"></div>
+    <div class="modal-title">✏️ Mon profil</div>
+    <div class="form-group"><label class="form-label">Nom complet</label><input type="text" id="ms-nom"></div>
+    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ms-adresse"></div>
     <div class="time-grid">
-      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ms-cp" placeholder="51000"></div>
-      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ms-ville" placeholder="Châlons"></div>
+      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ms-cp"></div>
+      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ms-ville"></div>
     </div>
-    <div class="form-group"><label class="form-label">Email</label><input type="email" id="ms-email" placeholder="jean@email.fr"></div>
-    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ms-tel" placeholder="06 12 34 56 78"></div>
+    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ms-tel"></div>
     <div class="modal-actions" style="margin-top:8px">
       <button class="btn btn-secondary" onclick="fermerModalSalarie()">Annuler</button>
       <button class="btn btn-primary" onclick="sauvegarderSalarie()"><i class="ti ti-check"></i> Enregistrer</button>
@@ -275,15 +273,15 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
   <div class="modal">
     <div class="modal-title">✏️ Modifier l'exploitation</div>
     <input type="hidden" id="me-id">
-    <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="me-nom" placeholder="ex : EARL Dupont"></div>
-    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="me-adresse" placeholder="ex : Route de la Ferme"></div>
+    <div class="form-group"><label class="form-label">Nom</label><input type="text" id="me-nom"></div>
+    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="me-adresse"></div>
     <div class="time-grid">
-      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="me-cp" placeholder="51000"></div>
-      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="me-ville" placeholder="Châlons"></div>
+      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="me-cp"></div>
+      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="me-ville"></div>
     </div>
-    <div class="form-group"><label class="form-label">Nom du gérant</label><input type="text" id="me-gerant" placeholder="ex : Marie Dupont"></div>
-    <div class="form-group"><label class="form-label">Email du gérant</label><input type="email" id="me-email" placeholder="marie@earl.fr"></div>
-    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="me-tel" placeholder="03 26 12 34 56"></div>
+    <div class="form-group"><label class="form-label">Nom du gérant</label><input type="text" id="me-gerant"></div>
+    <div class="form-group"><label class="form-label">Email du gérant</label><input type="email" id="me-email"></div>
+    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="me-tel"></div>
     <div class="modal-actions" style="margin-top:8px">
       <button class="btn btn-secondary" onclick="fermerModalExploit()">Annuler</button>
       <button class="btn btn-primary" onclick="sauvegarderExploit()"><i class="ti ti-check"></i> Enregistrer</button>
@@ -298,7 +296,7 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-      <button class="btn btn-danger" id="modal-confirm-btn" onclick="modalConfirm()">Confirmer</button>
+      <button class="btn btn-danger" onclick="modalConfirm()">Confirmer</button>
     </div>
   </div>
 </div>
@@ -307,8 +305,8 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBopo2N1KADeFnCwn46dP81t8zP_rjyOOM",
@@ -319,23 +317,13 @@ const firebaseConfig = {
   appId: "1:482819976840:web:c083a110405dee1c52f93d"
 };
 
-const fbApp = initializeApp(firebaseConfig);
-const db = getFirestore(fbApp);
-const auth = getAuth(fbApp);
-
-function attendreAuth() {
-  return new Promise((resolve, reject) => {
-    onAuthStateChanged(auth, (user) => { if (user) resolve(user); });
-    signInAnonymously(auth).catch(reject);
-  });
-}
-
-window.addEventListener('online',()=>{document.getElementById('offline-banner').classList.remove('show');showToast('✓ Connexion rétablie');});
-window.addEventListener('offline',()=>{document.getElementById('offline-banner').classList.add('show');});
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 let S = {
-  salarieId: localStorage.getItem('pt_salarieId') || null,
-  salarieNom: localStorage.getItem('pt_salarieNom') || '',
+  uid: null,
+  salarieNom: '',
   exploitationId: localStorage.getItem('pt_exploitationId') || null,
   exploitations: [],
   pointages: [],
@@ -343,147 +331,139 @@ let S = {
   unsubPointages: null,
   modalAction: null
 };
-function genId(){ return 'id_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+// ── UTILITAIRES ───────────────────────────────────────────────
 function hmToMin(hm){ if(!hm) return null; const [h,m]=hm.split(':').map(Number); return h*60+m; }
 function minToHM(min){ if(min==null) return '—'; const h=Math.floor(min/60), m=min%60; return h+'h'+String(m).padStart(2,'0'); }
 function calcJournee(am,fm,dam,fam){
-  const a=hmToMin(am), f=hmToMin(fm), d=hmToMin(dam), g=hmToMin(fam);
-  let totalMatin=0, totalAM=0, pause=0;
-  if(a!=null && f!=null && f>=a) totalMatin=f-a;
-  if(d!=null && g!=null && g>=d) totalAM=g-d;
-  if(f!=null && d!=null && d>=f) pause=d-f;
-  return {pause, total:totalMatin+totalAM};
+  const a=hmToMin(am),f=hmToMin(fm),d=hmToMin(dam),g=hmToMin(fam);
+  let tm=0,ta=0,pause=0;
+  if(a!=null&&f!=null&&f>=a) tm=f-a;
+  if(d!=null&&g!=null&&g>=d) ta=g-d;
+  if(f!=null&&d!=null&&d>=f) pause=d-f;
+  return {pause,total:tm+ta};
 }
 function fmtDate(iso){ const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'}); }
-function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-window.showToast=function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+window.showToast=function(msg,err=false){ const t=document.getElementById('toast'); t.textContent=msg; t.style.background=err?'#991b1b':''; t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.style.background='';},2800); }
 
-// ── INIT ────────────────────────────────────────────────────
-async function init(){
-  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
-  document.getElementById('r-mois').value = new Date().toISOString().slice(0,7);
-  try{ await attendreAuth(); }
-  catch(e){ showToast('Erreur connexion : '+e.message); document.getElementById('topbar-sub').textContent='Erreur connexion'; return; }
-  if(!S.salarieId){
-    document.getElementById('onboard-overlay').classList.add('active'); return;
-  }
-  await chargerExploitations();
-  if(!S.exploitationId && S.exploitations.length>0){
-    S.exploitationId = S.exploitations[0].id;
-    localStorage.setItem('pt_exploitationId', S.exploitationId);
-  }
-  majTopbar(); renderExploitSelects(); renderEntreprises(); renderConfigSalarie(); ecouterPointages();
+// ── AUTH ──────────────────────────────────────────────────────
+window.switchLoginTab=function(tab){
+  document.getElementById('tab-connexion').classList.toggle('active', tab==='connexion');
+  document.getElementById('tab-inscription').classList.toggle('active', tab==='inscription');
+  document.getElementById('form-connexion').style.display = tab==='connexion'?'block':'none';
+  document.getElementById('form-inscription').style.display = tab==='inscription'?'block':'none';
+  document.getElementById('login-error').classList.remove('show');
 }
 
-function majTopbar(){
-  const exp = S.exploitations.find(e=>e.id===S.exploitationId);
-  document.getElementById('topbar-sub').textContent = S.salarieNom + (exp ? ' · '+exp.nom : '');
+function showLoginError(msg){ const el=document.getElementById('login-error'); el.textContent=msg; el.classList.add('show'); }
+
+window.seConnecter=async function(){
+  const email=document.getElementById('l-email').value.trim();
+  const mdp=document.getElementById('l-mdp').value;
+  if(!email||!mdp){ showLoginError('Remplissez tous les champs'); return; }
+  try{ await signInWithEmailAndPassword(auth,email,mdp); }
+  catch(e){ showLoginError(tradErreur(e.code)); }
 }
 
-// ── ONBOARDING ───────────────────────────────────────────────
-window.finOnboarding=async function(){
-  const nom = document.getElementById('ob-nom-salarie').value.trim();
-  const entNom = document.getElementById('ob-nom-entreprise').value.trim();
-  if(!nom || !entNom){ showToast('Remplissez au moins votre nom et le nom de l\'exploitation'); return; }
-  const salarieId = genId();
-  const exploitationId = genId();
+window.sInscrire=async function(){
+  const nom=document.getElementById('i-nom').value.trim();
+  const email=document.getElementById('i-email').value.trim();
+  const mdp=document.getElementById('i-mdp').value;
+  if(!nom||!email||!mdp){ showLoginError('Remplissez tous les champs'); return; }
+  if(mdp.length<6){ showLoginError('Le mot de passe doit avoir au moins 6 caractères'); return; }
   try{
-    await setDoc(doc(db,'salaries',salarieId), {
-      nom,
-      adresse: document.getElementById('ob-adresse-salarie').value.trim(),
-      cp: document.getElementById('ob-cp-salarie').value.trim(),
-      ville: document.getElementById('ob-ville-salarie').value.trim(),
-      email: document.getElementById('ob-email-salarie').value.trim(),
-      tel: document.getElementById('ob-tel-salarie').value.trim(),
-      createdAt: serverTimestamp()
-    });
-    await setDoc(doc(db,'exploitations',exploitationId), {
-      nom: entNom,
-      adresse: document.getElementById('ob-adresse-entreprise').value.trim(),
-      cp: document.getElementById('ob-cp-entreprise').value.trim(),
-      ville: document.getElementById('ob-ville-entreprise').value.trim(),
-      gerant: document.getElementById('ob-gerant-entreprise').value.trim(),
-      email: document.getElementById('ob-email-entreprise').value.trim(),
-      tel: document.getElementById('ob-tel-entreprise').value.trim(),
-      salarieIds:[salarieId], createdAt: serverTimestamp()
-    });
-    S.salarieId=salarieId; S.salarieNom=nom; S.exploitationId=exploitationId;
-    localStorage.setItem('pt_salarieId', salarieId);
-    localStorage.setItem('pt_salarieNom', nom);
-    localStorage.setItem('pt_exploitationId', exploitationId);
-    document.getElementById('onboard-overlay').classList.remove('active');
-    await chargerExploitations();
-    majTopbar(); renderExploitSelects(); renderEntreprises(); renderConfigSalarie(); ecouterPointages();
-    showToast('✓ Bienvenue, '+nom+' !');
-  }catch(e){ showToast('Erreur : '+e.message); }
+    const cred = await createUserWithEmailAndPassword(auth,email,mdp);
+    await setDoc(doc(db,'salaries',cred.user.uid),{ nom, email, createdAt:serverTimestamp() });
+  }catch(e){ showLoginError(tradErreur(e.code)); }
 }
 
-// ── CONFIG SALARIÉ (affichage + modal) ───────────────────────
+window.reinitialiserMdp=async function(){
+  const email=document.getElementById('l-email').value.trim();
+  if(!email){ showLoginError('Entrez votre email ci-dessus'); return; }
+  try{ await sendPasswordResetEmail(auth,email); showToast('Email envoyé — vérifiez votre boîte mail'); }
+  catch(e){ showLoginError(tradErreur(e.code)); }
+}
+
+window.seDeconnecter=async function(){
+  if(S.unsubPointages) S.unsubPointages();
+  await signOut(auth);
+}
+
+function tradErreur(code){
+  const map={'auth/invalid-email':'Email invalide','auth/user-not-found':'Aucun compte avec cet email','auth/wrong-password':'Mot de passe incorrect','auth/email-already-in-use':'Cet email est déjà utilisé','auth/weak-password':'Mot de passe trop faible (6 caractères minimum)','auth/invalid-credential':'Email ou mot de passe incorrect'};
+  return map[code]||'Erreur : '+code;
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    S.uid = user.uid;
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('main-app').style.display='flex';
+    document.getElementById('main-app').style.flexDirection='column';
+    await chargerProfil();
+    await chargerExploitations();
+    if(!S.exploitationId && S.exploitations.length>0){
+      S.exploitationId=S.exploitations[0].id;
+      localStorage.setItem('pt_exploitationId',S.exploitationId);
+    }
+    document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+    document.getElementById('r-mois').value=new Date().toISOString().slice(0,7);
+    majTopbar(); renderEntreprises(); renderConfigSalarie(); ecouterPointages();
+  } else {
+    S.uid=null;
+    document.getElementById('login-screen').classList.add('active');
+    document.getElementById('main-app').style.display='none';
+  }
+});
+
+// ── PROFIL ────────────────────────────────────────────────────
+async function chargerProfil(){
+  const snap=await getDoc(doc(db,'salaries',S.uid));
+  if(snap.exists()){ S.salarieNom=snap.data().nom||''; }
+}
+
 async function renderConfigSalarie(){
-  if(!S.salarieId){ return; }
-  const snap = await getDoc(doc(db,'salaries',S.salarieId));
-  const d = snap.exists() ? snap.data() : {};
-  const el = document.getElementById('config-salarie-affichage');
-  el.innerHTML = `
-    <div style="font-size:14px;font-weight:600;color:var(--text)">${escapeHtml(d.nom||'—')}</div>
+  if(!S.uid) return;
+  const snap=await getDoc(doc(db,'salaries',S.uid));
+  const d=snap.exists()?snap.data():{};
+  document.getElementById('config-salarie-affichage').innerHTML=`
+    <div style="font-size:14px;font-weight:600">${escapeHtml(d.nom||'—')}</div>
     ${d.adresse?`<div style="font-size:12px;color:var(--text2);margin-top:3px">${escapeHtml(d.adresse)}</div>`:''}
     ${(d.cp||d.ville)?`<div style="font-size:12px;color:var(--text2)">${escapeHtml((d.cp||'')+' '+(d.ville||''))}</div>`:''}
     ${d.email?`<div style="font-size:12px;color:var(--text2)">📧 ${escapeHtml(d.email)}</div>`:''}
-    ${d.tel?`<div style="font-size:12px;color:var(--text2)">📞 ${escapeHtml(d.tel)}</div>`:''}
-  `;
+    ${d.tel?`<div style="font-size:12px;color:var(--text2)">📞 ${escapeHtml(d.tel)}</div>`:''}`;
 }
 
 window.ouvrirModalSalarie=async function(){
-  if(!S.salarieId) return;
-  const snap = await getDoc(doc(db,'salaries',S.salarieId));
-  const d = snap.exists() ? snap.data() : {};
-  document.getElementById('ms-nom').value = d.nom||'';
-  document.getElementById('ms-adresse').value = d.adresse||'';
-  document.getElementById('ms-cp').value = d.cp||'';
-  document.getElementById('ms-ville').value = d.ville||'';
-  document.getElementById('ms-email').value = d.email||'';
-  document.getElementById('ms-tel').value = d.tel||'';
+  const snap=await getDoc(doc(db,'salaries',S.uid));
+  const d=snap.exists()?snap.data():{};
+  document.getElementById('ms-nom').value=d.nom||'';
+  document.getElementById('ms-adresse').value=d.adresse||'';
+  document.getElementById('ms-cp').value=d.cp||'';
+  document.getElementById('ms-ville').value=d.ville||'';
+  document.getElementById('ms-tel').value=d.tel||'';
   document.getElementById('modal-salarie-overlay').classList.add('active');
 }
 window.fermerModalSalarie=function(){ document.getElementById('modal-salarie-overlay').classList.remove('active'); }
-
 window.sauvegarderSalarie=async function(){
-  const nom = document.getElementById('ms-nom').value.trim();
-  if(!nom){ showToast('Le nom est obligatoire'); return; }
-  try{
-    await updateDoc(doc(db,'salaries',S.salarieId), {
-      nom,
-      adresse: document.getElementById('ms-adresse').value.trim(),
-      cp: document.getElementById('ms-cp').value.trim(),
-      ville: document.getElementById('ms-ville').value.trim(),
-      email: document.getElementById('ms-email').value.trim(),
-      tel: document.getElementById('ms-tel').value.trim(),
-    });
-    S.salarieNom = nom;
-    localStorage.setItem('pt_salarieNom', nom);
-    fermerModalSalarie(); majTopbar(); renderConfigSalarie();
-    showToast('✓ Profil mis à jour');
-  }catch(e){ showToast('Erreur : '+e.message); }
+  const nom=document.getElementById('ms-nom').value.trim();
+  if(!nom){ showToast('Le nom est obligatoire',true); return; }
+  await updateDoc(doc(db,'salaries',S.uid),{ nom, adresse:document.getElementById('ms-adresse').value.trim(), cp:document.getElementById('ms-cp').value.trim(), ville:document.getElementById('ms-ville').value.trim(), tel:document.getElementById('ms-tel').value.trim() });
+  S.salarieNom=nom; fermerModalSalarie(); majTopbar(); renderConfigSalarie();
+  showToast('✓ Profil mis à jour');
 }
 
-// ── EXPLOITATIONS ────────────────────────────────────────────
+// ── EXPLOITATIONS ─────────────────────────────────────────────
 async function chargerExploitations(){
-  const snap = await getDocs(query(collection(db,'exploitations'), where('salarieIds','array-contains',S.salarieId)));
-  S.exploitations = []; snap.forEach(d=>S.exploitations.push({id:d.id,...d.data()}));
-}
-
-function renderExploitSelects(){
-  const opts = S.exploitations.map(e=>`<option value="${e.id}" ${e.id===S.exploitationId?'selected':''}>${escapeHtml(e.nom)}</option>`).join('');
-  const multi = S.exploitations.length>1;
-  ['f-exploit','r-exploit'].forEach(id=>{ document.getElementById(id).innerHTML = opts; });
-  document.getElementById('f-exploit-wrap').style.display = multi ? 'block':'none';
-  document.getElementById('r-exploit-wrap').style.display = multi ? 'block':'none';
+  const snap=await getDocs(query(collection(db,'exploitations'),where('salarieIds','array-contains',S.uid)));
+  S.exploitations=[]; snap.forEach(d=>S.exploitations.push({id:d.id,...d.data()}));
 }
 
 function renderEntreprises(){
-  const el = document.getElementById('entreprise-list');
-  if(S.exploitations.length===0){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucune exploitation.</div>'; return; }
-  el.innerHTML = S.exploitations.map(e=>`
+  const el=document.getElementById('entreprise-list');
+  if(!S.exploitations.length){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucune exploitation.</div>'; return; }
+  el.innerHTML=S.exploitations.map(e=>`
     <div class="entreprise-row">
       <div class="entreprise-info">
         <div class="entreprise-nom">${escapeHtml(e.nom)} ${e.id===S.exploitationId?'<span class="badge actif">Active</span>':''}</div>
@@ -492,123 +472,107 @@ function renderEntreprises(){
       </div>
       <div class="hist-actions">
         <button class="icon-btn" onclick="ouvrirModalExploit('${e.id}')"><i class="ti ti-pencil"></i></button>
-        ${e.id!==S.exploitationId?`<button class="icon-btn" onclick="activerEntreprise('${e.id}')" title="Activer"><i class="ti ti-check"></i></button>`:''}
+        ${e.id!==S.exploitationId?`<button class="icon-btn" onclick="activerEntreprise('${e.id}')"><i class="ti ti-check"></i></button>`:''}
         <button class="icon-btn danger" onclick="confirmerSuppressionEntreprise('${e.id}','${escapeHtml(e.nom)}')"><i class="ti ti-trash"></i></button>
       </div>
     </div>`).join('');
 }
 
 window.ouvrirModalExploit=async function(id){
-  const snap = await getDoc(doc(db,'exploitations',id));
-  const d = snap.exists() ? snap.data() : {};
-  document.getElementById('me-id').value = id;
-  document.getElementById('me-nom').value = d.nom||'';
-  document.getElementById('me-adresse').value = d.adresse||'';
-  document.getElementById('me-cp').value = d.cp||'';
-  document.getElementById('me-ville').value = d.ville||'';
-  document.getElementById('me-gerant').value = d.gerant||'';
-  document.getElementById('me-email').value = d.email||'';
-  document.getElementById('me-tel').value = d.tel||'';
+  const snap=await getDoc(doc(db,'exploitations',id));
+  const d=snap.exists()?snap.data():{};
+  document.getElementById('me-id').value=id;
+  document.getElementById('me-nom').value=d.nom||'';
+  document.getElementById('me-adresse').value=d.adresse||'';
+  document.getElementById('me-cp').value=d.cp||'';
+  document.getElementById('me-ville').value=d.ville||'';
+  document.getElementById('me-gerant').value=d.gerant||'';
+  document.getElementById('me-email').value=d.email||'';
+  document.getElementById('me-tel').value=d.tel||'';
   document.getElementById('modal-exploit-overlay').classList.add('active');
 }
 window.fermerModalExploit=function(){ document.getElementById('modal-exploit-overlay').classList.remove('active'); }
-
 window.sauvegarderExploit=async function(){
-  const id = document.getElementById('me-id').value;
-  const nom = document.getElementById('me-nom').value.trim();
-  if(!nom){ showToast('Le nom est obligatoire'); return; }
-  try{
-    await updateDoc(doc(db,'exploitations',id), {
-      nom,
-      adresse: document.getElementById('me-adresse').value.trim(),
-      cp: document.getElementById('me-cp').value.trim(),
-      ville: document.getElementById('me-ville').value.trim(),
-      gerant: document.getElementById('me-gerant').value.trim(),
-      email: document.getElementById('me-email').value.trim(),
-      tel: document.getElementById('me-tel').value.trim(),
-    });
-    fermerModalExploit();
-    await chargerExploitations();
-    majTopbar(); renderExploitSelects(); renderEntreprises();
-    showToast('✓ Exploitation mise à jour');
-  }catch(e){ showToast('Erreur : '+e.message); }
+  const id=document.getElementById('me-id').value;
+  const nom=document.getElementById('me-nom').value.trim();
+  if(!nom){ showToast('Le nom est obligatoire',true); return; }
+  await updateDoc(doc(db,'exploitations',id),{ nom, adresse:document.getElementById('me-adresse').value.trim(), cp:document.getElementById('me-cp').value.trim(), ville:document.getElementById('me-ville').value.trim(), gerant:document.getElementById('me-gerant').value.trim(), email:document.getElementById('me-email').value.trim(), tel:document.getElementById('me-tel').value.trim() });
+  fermerModalExploit(); await chargerExploitations(); majTopbar(); renderEntreprises();
+  showToast('✓ Exploitation mise à jour');
 }
 
 window.creerEntreprise=async function(){
-  const nom = document.getElementById('c-nom-entreprise').value.trim();
-  if(!nom){ showToast('Entrez un nom'); return; }
-  try{
-    const id = genId();
-    await setDoc(doc(db,'exploitations',id), { nom, salarieIds:[S.salarieId], createdAt: serverTimestamp() });
-    document.getElementById('c-nom-entreprise').value='';
-    await chargerExploitations(); renderExploitSelects(); renderEntreprises();
-    showToast('✓ Exploitation créée — pensez à compléter ses infos');
-  }catch(e){ showToast('Erreur : '+e.message); }
+  const nom=document.getElementById('c-nom-entreprise').value.trim();
+  if(!nom){ showToast('Entrez un nom',true); return; }
+  const id='expl_'+Math.random().toString(36).slice(2,10);
+  await setDoc(doc(db,'exploitations',id),{ nom, salarieIds:[S.uid], createdAt:serverTimestamp() });
+  document.getElementById('c-nom-entreprise').value='';
+  await chargerExploitations(); renderEntreprises();
+  showToast('✓ Exploitation créée');
 }
 
-window.activerEntreprise=function(id){ S.exploitationId=id; localStorage.setItem('pt_exploitationId',id); majTopbar(); renderExploitSelects(); renderEntreprises(); ecouterPointages(); showToast('✓ Exploitation active changée'); }
+window.activerEntreprise=function(id){ S.exploitationId=id; localStorage.setItem('pt_exploitationId',id); majTopbar(); renderEntreprises(); ecouterPointages(); showToast('✓ Exploitation active changée'); }
 
 window.confirmerSuppressionEntreprise=function(id,nom){
-  openModal('Supprimer l\'exploitation', `Supprimer « ${nom} » ?`, async ()=>{
+  openModal('Supprimer l\'exploitation',`Supprimer « ${nom} » ?`,async()=>{
     await deleteDoc(doc(db,'exploitations',id));
     if(S.exploitationId===id) S.exploitationId=null;
     await chargerExploitations();
-    if(!S.exploitationId && S.exploitations.length>0) S.exploitationId=S.exploitations[0].id;
-    localStorage.setItem('pt_exploitationId', S.exploitationId||'');
-    renderExploitSelects(); renderEntreprises(); majTopbar(); ecouterPointages();
-    showToast('✓ Exploitation supprimée');
+    if(!S.exploitationId&&S.exploitations.length>0) S.exploitationId=S.exploitations[0].id;
+    localStorage.setItem('pt_exploitationId',S.exploitationId||'');
+    renderEntreprises(); majTopbar(); ecouterPointages();
+    showToast('✓ Supprimée');
   });
 }
 
-// ── POINTAGES ────────────────────────────────────────────────
+function majTopbar(){
+  const exp=S.exploitations.find(e=>e.id===S.exploitationId);
+  document.getElementById('topbar-sub').textContent=S.salarieNom+(exp?' · '+exp.nom:'');
+}
+
+// ── POINTAGES ─────────────────────────────────────────────────
 function ecouterPointages(){
   if(S.unsubPointages) S.unsubPointages();
   if(!S.exploitationId){ S.pointages=[]; renderHistorique(); renderRecap(); return; }
-  const q = query(collection(db,'pointages'), where('salarieId','==',S.salarieId), where('exploitationId','==',S.exploitationId));
-  S.unsubPointages = onSnapshot(q, (snap)=>{
-    S.pointages = []; snap.forEach(d=>S.pointages.push({id:d.id,...d.data()}));
+  const q=query(collection(db,'pointages'),where('uid','==',S.uid),where('exploitationId','==',S.exploitationId));
+  S.unsubPointages=onSnapshot(q,(snap)=>{
+    S.pointages=[]; snap.forEach(d=>S.pointages.push({id:d.id,...d.data()}));
     S.pointages.sort((a,b)=>b.date.localeCompare(a.date));
     renderHistorique(); renderRecap();
-  }, (err)=>{ showToast('Erreur synchro : '+err.message); });
+  },(err)=>{ showToast('Erreur synchro : '+err.message,true); });
 }
 
 function recalc(){
-  const am=document.getElementById('f-arrivee-matin').value, fm=document.getElementById('f-fin-matin').value;
-  const dam=document.getElementById('f-debut-am').value, fam=document.getElementById('f-fin-am').value;
-  const {pause,total} = calcJournee(am,fm,dam,fam);
-  const el = document.getElementById('recap-jour');
-  if(!am && !fm && !dam && !fam){ el.innerHTML=''; return; }
-  el.innerHTML = `<div class="alert ok"><i class="ti ti-clock"></i> Pause : <strong>${minToHM(pause)}</strong> · Temps travaillé : <strong>${minToHM(total)}</strong></div>`;
+  const am=document.getElementById('f-arrivee-matin').value,fm=document.getElementById('f-fin-matin').value;
+  const dam=document.getElementById('f-debut-am').value,fam=document.getElementById('f-fin-am').value;
+  const {pause,total}=calcJournee(am,fm,dam,fam);
+  const el=document.getElementById('recap-jour');
+  if(!am&&!fm&&!dam&&!fam){el.innerHTML='';return;}
+  el.innerHTML=`<div class="alert ok"><i class="ti ti-clock"></i> Pause : <strong>${minToHM(pause)}</strong> · Temps travaillé : <strong>${minToHM(total)}</strong></div>`;
 }
-window.recalc = recalc;
+window.recalc=recalc;
 
 window.saveJour=async function(){
-  if(!S.exploitationId){ showToast('Créez d\'abord une exploitation dans Config'); return; }
-  const date = document.getElementById('f-date').value;
-  const am=document.getElementById('f-arrivee-matin').value, fm=document.getElementById('f-fin-matin').value;
-  const dam=document.getElementById('f-debut-am').value, fam=document.getElementById('f-fin-am').value;
-  const commentaire = document.getElementById('f-commentaire').value.trim();
-  if(!date){ showToast('Sélectionnez une date'); return; }
-  if(!am && !fm && !dam && !fam){ showToast('Renseignez au moins une heure'); return; }
-  const {pause,total} = calcJournee(am,fm,dam,fam);
-  const exp = S.exploitations.find(e=>e.id===S.exploitationId);
-  const data = {
-    salarieId:S.salarieId, salarieNom:S.salarieNom,
-    exploitationId:S.exploitationId, exploitationNom: exp?exp.nom:'',
-    date, arriveeMatin:am||null, finMatin:fm||null, debutAM:dam||null, finAM:fam||null,
-    pauseMin:pause, totalMin:total, commentaire, updatedAt: serverTimestamp()
-  };
+  if(!S.exploitationId){ showToast('Créez d\'abord une exploitation dans Config',true); return; }
+  const date=document.getElementById('f-date').value;
+  const am=document.getElementById('f-arrivee-matin').value,fm=document.getElementById('f-fin-matin').value;
+  const dam=document.getElementById('f-debut-am').value,fam=document.getElementById('f-fin-am').value;
+  if(!date){ showToast('Sélectionnez une date',true); return; }
+  if(!am&&!fm&&!dam&&!fam){ showToast('Renseignez au moins une heure',true); return; }
+  const {pause,total}=calcJournee(am,fm,dam,fam);
+  const exp=S.exploitations.find(e=>e.id===S.exploitationId);
+  const data={ uid:S.uid, salarieNom:S.salarieNom, exploitationId:S.exploitationId, exploitationNom:exp?exp.nom:'', date, arriveeMatin:am||null, finMatin:fm||null, debutAM:dam||null, finAM:fam||null, pauseMin:pause, totalMin:total, commentaire:document.getElementById('f-commentaire').value.trim(), updatedAt:serverTimestamp() };
   try{
     const btn=document.getElementById('btn-save'); btn.disabled=true;
-    if(S.editId){ await updateDoc(doc(db,'pointages',S.editId), data); showToast('✓ Journée modifiée'); }
-    else { data.createdAt=serverTimestamp(); await addDoc(collection(db,'pointages'), data); showToast('✓ Journée enregistrée'); }
+    if(S.editId){ await updateDoc(doc(db,'pointages',S.editId),data); showToast('✓ Journée modifiée'); }
+    else { data.createdAt=serverTimestamp(); await addDoc(collection(db,'pointages'),data); showToast('✓ Journée enregistrée'); }
     resetForm(); btn.disabled=false;
-  }catch(e){ showToast('Erreur : '+e.message); document.getElementById('btn-save').disabled=false; }
+  }catch(e){ showToast('Erreur : '+e.message,true); document.getElementById('btn-save').disabled=false; }
 }
 
 function resetForm(){
   S.editId=null;
-  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   ['f-arrivee-matin','f-fin-matin','f-debut-am','f-fin-am','f-commentaire'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('recap-jour').innerHTML='';
   document.getElementById('form-title').textContent='Saisir une journée';
@@ -617,7 +581,7 @@ function resetForm(){
 window.cancelEdit=resetForm;
 
 window.editJour=function(id){
-  const p = S.pointages.find(x=>x.id===id); if(!p) return;
+  const p=S.pointages.find(x=>x.id===id); if(!p) return;
   S.editId=id;
   document.getElementById('f-date').value=p.date;
   document.getElementById('f-arrivee-matin').value=p.arriveeMatin||'';
@@ -631,7 +595,7 @@ window.editJour=function(id){
 }
 
 window.confirmerSuppressionJour=function(id,dateLabel){
-  openModal('Supprimer la journée', `Supprimer le pointage du ${dateLabel} ? Cette action est irréversible.`, async ()=>{
+  openModal('Supprimer la journée',`Supprimer le pointage du ${dateLabel} ?`,async()=>{
     await deleteDoc(doc(db,'pointages',id));
     showToast('✓ Journée supprimée');
     if(S.editId===id) resetForm();
@@ -639,13 +603,13 @@ window.confirmerSuppressionJour=function(id,dateLabel){
 }
 
 function renderHistorique(){
-  const el = document.getElementById('hist-list');
-  if(S.pointages.length===0){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucun pointage pour le moment.</div>'; return; }
-  el.innerHTML = S.pointages.slice(0,30).map(p=>`
+  const el=document.getElementById('hist-list');
+  if(!S.pointages.length){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucun pointage pour le moment.</div>'; return; }
+  el.innerHTML=S.pointages.slice(0,30).map(p=>`
     <div class="hist-item">
       <div style="flex:1;min-width:0">
         <div class="hist-main">${fmtDate(p.date)}</div>
-        <div class="hist-sub">${p.arriveeMatin||'—'} → ${p.finMatin||'—'} · ${p.debutAM||'—'} → ${p.finAM||'—'} ${p.pauseMin?('· pause '+minToHM(p.pauseMin)):''}</div>
+        <div class="hist-sub">${p.arriveeMatin||'—'} → ${p.finMatin||'—'} · ${p.debutAM||'—'} → ${p.finAM||'—'} ${p.pauseMin?'· pause '+minToHM(p.pauseMin):''}</div>
         ${p.commentaire?`<div class="hist-sub" style="color:var(--text3)">${escapeHtml(p.commentaire)}</div>`:''}
       </div>
       <div class="hist-val">${minToHM(p.totalMin)}</div>
@@ -656,112 +620,88 @@ function renderHistorique(){
     </div>`).join('');
 }
 
-// ── RÉCAP MENSUEL ────────────────────────────────────────────
-function moisActuel(){ return document.getElementById('r-mois').value || new Date().toISOString().slice(0,7); }
-function pointagesDuMois(){
-  const mois = moisActuel();
-  return S.pointages.filter(p=>p.date.startsWith(mois)).sort((a,b)=>a.date.localeCompare(b.date));
-}
+// ── RÉCAP ─────────────────────────────────────────────────────
+function moisActuel(){ return document.getElementById('r-mois').value||new Date().toISOString().slice(0,7); }
+function pointagesDuMois(){ return S.pointages.filter(p=>p.date.startsWith(moisActuel())).sort((a,b)=>a.date.localeCompare(b.date)); }
+
 window.renderRecap=function(){
-  const liste = pointagesDuMois();
-  const totalMin = liste.reduce((s,p)=>s+(p.totalMin||0),0);
-  document.getElementById('r-total').textContent = minToHM(totalMin);
-  document.getElementById('r-jours').textContent = liste.length;
-  const tb = document.getElementById('r-tbody');
-  if(liste.length===0){ tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:14px 4px">Aucune journée ce mois-ci</td></tr>'; return; }
-  tb.innerHTML = liste.map(p=>`<tr>
-    <td>${fmtDate(p.date)}</td><td>${p.arriveeMatin||'—'}</td><td>${p.finMatin||'—'}</td><td>${p.debutAM||'—'}</td><td>${p.finAM||'—'}</td><td>${minToHM(p.pauseMin)}</td><td><strong>${minToHM(p.totalMin)}</strong></td>
-  </tr>`).join('') + `<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td></td><td></td><td>${minToHM(totalMin)}</td></tr>`;
+  const liste=pointagesDuMois();
+  const totalMin=liste.reduce((s,p)=>s+(p.totalMin||0),0);
+  document.getElementById('r-total').textContent=minToHM(totalMin);
+  document.getElementById('r-jours').textContent=liste.length;
+  const tb=document.getElementById('r-tbody');
+  if(!liste.length){ tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:14px">Aucune journée ce mois-ci</td></tr>'; return; }
+  tb.innerHTML=liste.map(p=>`<tr><td>${fmtDate(p.date)}</td><td>${p.arriveeMatin||'—'}</td><td>${p.finMatin||'—'}</td><td>${p.debutAM||'—'}</td><td>${p.finAM||'—'}</td><td>${minToHM(p.pauseMin)}</td><td><strong>${minToHM(p.totalMin)}</strong></td></tr>`).join('')+`<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td></td><td></td><td>${minToHM(totalMin)}</td></tr>`;
 }
 
 // ── PDF ───────────────────────────────────────────────────────
 async function construirePDF(){
-  const liste = pointagesDuMois();
-  const exp = S.exploitations.find(e=>e.id===S.exploitationId);
-  const mois = moisActuel();
-  const [annee,m] = mois.split('-');
-  const nomMois = new Date(annee, m-1, 1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
-  const totalMin = liste.reduce((s,p)=>s+(p.totalMin||0),0);
-  const salSnap = await getDoc(doc(db,'salaries',S.salarieId));
-  const sal = salSnap.exists() ? salSnap.data() : {};
-  const pdf = new jspdf.jsPDF();
-  const blue=[30,58,95]; const grey=[120,113,108];
-
-  // En-tête
+  const liste=pointagesDuMois();
+  const exp=S.exploitations.find(e=>e.id===S.exploitationId);
+  const mois=moisActuel(); const [annee,m]=mois.split('-');
+  const nomMois=new Date(annee,m-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  const totalMin=liste.reduce((s,p)=>s+(p.totalMin||0),0);
+  const salSnap=await getDoc(doc(db,'salaries',S.uid));
+  const sal=salSnap.exists()?salSnap.data():{};
+  const pdf=new jspdf.jsPDF();
+  const blue=[30,58,95],grey=[120,113,108];
   pdf.setFillColor(...blue); pdf.rect(0,0,210,22,'F');
   pdf.setTextColor(255,255,255); pdf.setFontSize(15); pdf.setFont('helvetica','bold');
-  pdf.text('Récapitulatif des horaires', 14, 14);
+  pdf.text('Récapitulatif des horaires',14,14);
   pdf.setFontSize(10); pdf.setFont('helvetica','normal');
-  pdf.text(nomMois.charAt(0).toUpperCase()+nomMois.slice(1), 196, 14, {align:'right'});
-
-  // Infos salarié
-  let y = 30;
+  pdf.text(nomMois.charAt(0).toUpperCase()+nomMois.slice(1),196,14,{align:'right'});
+  let y=30,ye=30;
   pdf.setTextColor(...grey); pdf.setFontSize(9);
-  pdf.setFont('helvetica','bold'); pdf.text('SALARIÉ', 14, y); y+=5;
+  pdf.setFont('helvetica','bold'); pdf.text('SALARIÉ',14,y); y+=5;
   pdf.setFont('helvetica','normal');
-  pdf.text(sal.nom||S.salarieNom||'—', 14, y); y+=4;
-  if(sal.adresse) { pdf.text(sal.adresse, 14, y); y+=4; }
-  if(sal.cp||sal.ville) { pdf.text(((sal.cp||'')+' '+(sal.ville||'')).trim(), 14, y); y+=4; }
-  if(sal.email) { pdf.text('Email : '+sal.email, 14, y); y+=4; }
-  if(sal.tel) { pdf.text('Tél : '+sal.tel, 14, y); y+=4; }
-
-  // Infos exploitation
-  let ye = 30;
-  pdf.setFont('helvetica','bold'); pdf.text('EXPLOITATION', 110, ye); ye+=5;
+  pdf.text(sal.nom||S.salarieNom||'—',14,y); y+=4;
+  if(sal.adresse){pdf.text(sal.adresse,14,y);y+=4;}
+  if(sal.cp||sal.ville){pdf.text(((sal.cp||'')+' '+(sal.ville||'')).trim(),14,y);y+=4;}
+  if(sal.email){pdf.text('Email : '+sal.email,14,y);y+=4;}
+  if(sal.tel){pdf.text('Tél : '+sal.tel,14,y);y+=4;}
+  pdf.setFont('helvetica','bold'); pdf.text('EXPLOITATION',110,ye); ye+=5;
   pdf.setFont('helvetica','normal');
-  if(exp){ 
-    pdf.text(exp.nom||'—', 110, ye); ye+=4;
-    if(exp.adresse) { pdf.text(exp.adresse, 110, ye); ye+=4; }
-    if(exp.cp||exp.ville) { pdf.text(((exp.cp||'')+' '+(exp.ville||'')).trim(), 110, ye); ye+=4; }
-    if(exp.gerant) { pdf.text('Gérant : '+exp.gerant, 110, ye); ye+=4; }
-    if(exp.email) { pdf.text('Email : '+exp.email, 110, ye); ye+=4; }
-    if(exp.tel) { pdf.text('Tél : '+exp.tel, 110, ye); ye+=4; }
+  if(exp){
+    pdf.text(exp.nom||'—',110,ye);ye+=4;
+    if(exp.adresse){pdf.text(exp.adresse,110,ye);ye+=4;}
+    if(exp.cp||exp.ville){pdf.text(((exp.cp||'')+' '+(exp.ville||'')).trim(),110,ye);ye+=4;}
+    if(exp.gerant){pdf.text('Gérant : '+exp.gerant,110,ye);ye+=4;}
+    if(exp.email){pdf.text('Email : '+exp.email,110,ye);ye+=4;}
+    if(exp.tel){pdf.text('Tél : '+exp.tel,110,ye);ye+=4;}
   }
-
-  const startY = Math.max(y, ye) + 4;
-  const rows = liste.map(p=>[fmtDate(p.date), p.arriveeMatin||'—', p.finMatin||'—', p.debutAM||'—', p.finAM||'—', minToHM(p.pauseMin), minToHM(p.totalMin)]);
+  const startY=Math.max(y,ye)+4;
+  const rows=liste.map(p=>[fmtDate(p.date),p.arriveeMatin||'—',p.finMatin||'—',p.debutAM||'—',p.finAM||'—',minToHM(p.pauseMin),minToHM(p.totalMin)]);
   rows.push(['TOTAL','','','','','',minToHM(totalMin)]);
-  pdf.autoTable({
-    startY, margin:{left:14,right:14},
-    head:[['Date','Arrivée','Fin matin','Début AM','Fin AM','Pause','Total']],
-    body:rows,
-    styles:{fontSize:9,cellPadding:2.5,halign:'center'},
-    columnStyles:{0:{halign:'left'}},
-    headStyles:{fillColor:blue,textColor:[255,255,255],fontStyle:'bold',fontSize:8.5},
-    didParseCell:(d)=>{ if(d.row.index===rows.length-1){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[219,234,254];} }
-  });
-  let yf = pdf.lastAutoTable.finalY + 14;
+  pdf.autoTable({startY,margin:{left:14,right:14},head:[['Date','Arrivée','Fin matin','Début AM','Fin AM','Pause','Total']],body:rows,styles:{fontSize:9,cellPadding:2.5,halign:'center'},columnStyles:{0:{halign:'left'}},headStyles:{fillColor:blue,textColor:[255,255,255],fontStyle:'bold',fontSize:8.5},didParseCell:(d)=>{if(d.row.index===rows.length-1){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[219,234,254];}}});
+  let yf=pdf.lastAutoTable.finalY+14;
   pdf.setTextColor(...grey); pdf.setFontSize(9);
-  pdf.text('Signature salarié :', 14, yf); pdf.line(50,yf,96,yf);
-  pdf.text('Signature employeur :', 110, yf); pdf.line(150,yf,196,yf);
-  const pageCount = pdf.internal.getNumberOfPages();
-  for(let i=1;i<=pageCount;i++){ pdf.setPage(i); pdf.setTextColor(...grey); pdf.setFontSize(7);
-    pdf.text(`Pointage ${nomMois} · ${S.salarieNom} · Page ${i}/${pageCount}`, 105, 290, {align:'center'}); }
-  return { pdf, filename:`Pointage_${mois}_${(S.salarieNom||'salarie').replace(/\s+/g,'_')}.pdf`, nomMois };
+  pdf.text('Signature salarié :',14,yf); pdf.line(50,yf,96,yf);
+  pdf.text('Signature employeur :',110,yf); pdf.line(150,yf,196,yf);
+  const pc=pdf.internal.getNumberOfPages();
+  for(let i=1;i<=pc;i++){pdf.setPage(i);pdf.setTextColor(...grey);pdf.setFontSize(7);pdf.text(`Pointage ${nomMois} · ${S.salarieNom} · Page ${i}/${pc}`,105,290,{align:'center'});}
+  return {pdf,filename:`Pointage_${mois}_${(S.salarieNom||'salarie').replace(/\s+/g,'_')}.pdf`,nomMois};
 }
 
 window.genererPDF=async function(partager){
-  if(pointagesDuMois().length===0){ showToast('Aucune journée à exporter ce mois-ci'); return; }
+  if(!pointagesDuMois().length){showToast('Aucune journée à exporter',true);return;}
   try{
-    const { pdf, filename, nomMois } = await construirePDF();
-    if(partager && navigator.canShare && navigator.share){
-      const blob = pdf.output('blob');
-      const file = new File([blob], filename, {type:'application/pdf'});
-      if(navigator.canShare({files:[file]})){
-        await navigator.share({ files:[file], title:'Récapitulatif horaires', text:`Récapitulatif — ${nomMois}` }); return;
-      }
+    const {pdf,filename,nomMois}=await construirePDF();
+    if(partager&&navigator.canShare&&navigator.share){
+      const blob=pdf.output('blob');
+      const file=new File([blob],filename,{type:'application/pdf'});
+      if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Récapitulatif horaires',text:`Récapitulatif — ${nomMois}`});return;}
     }
     pdf.save(filename);
     if(partager){
-      const sujet = encodeURIComponent('Récapitulatif des horaires - '+nomMois);
-      const corps = encodeURIComponent(`Bonjour,\n\nVeuillez trouver ci-joint mon récapitulatif d'horaires pour ${nomMois}.\n\nCordialement,\n${S.salarieNom}`);
-      window.location.href = `mailto:?subject=${sujet}&body=${corps}`;
-      showToast('PDF téléchargé — pensez à le joindre à l\'email');
+      const sujet=encodeURIComponent('Récapitulatif des horaires - '+nomMois);
+      const corps=encodeURIComponent(`Bonjour,\n\nVeuillez trouver ci-joint mon récapitulatif d'horaires pour ${nomMois}.\n\nCordialement,\n${S.salarieNom}`);
+      window.location.href=`mailto:?subject=${sujet}&body=${corps}`;
+      showToast('PDF téléchargé — pensez à le joindre');
     } else { showToast('✓ PDF téléchargé'); }
-  }catch(e){ showToast('Erreur PDF : '+e.message); }
+  }catch(e){showToast('Erreur PDF : '+e.message,true);}
 }
 
-// ── NAVIGATION ───────────────────────────────────────────────
+// ── NAVIGATION ────────────────────────────────────────────────
 window.switchScreen=function(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -777,12 +717,10 @@ function openModal(title,body,action){
   S.modalAction=action;
   document.getElementById('modal-overlay').classList.add('active');
 }
-window.closeModal=function(){ document.getElementById('modal-overlay').classList.remove('active'); S.modalAction=null; }
-window.modalConfirm=async function(){ const a=S.modalAction; closeModal(); if(a) await a(); }
+window.closeModal=function(){document.getElementById('modal-overlay').classList.remove('active');S.modalAction=null;}
+window.modalConfirm=async function(){const a=S.modalAction;closeModal();if(a) await a();}
 
-if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
-
-init();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 </body>
 </html>
