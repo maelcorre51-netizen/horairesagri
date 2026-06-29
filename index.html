@@ -1,181 +1,625 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2d6a4f" />
-  <meta name="description" content="Pointage horaire agricole" />
-  <title>HorairesAgri</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1e3a5f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱️</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231e3a5f%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22>⏱️</text></svg>">
+<title>Pointage Horaires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root{
+  --bg:#f5f3ee;--bg2:#ece9e2;--bg3:#e3dfd6;
+  --surface:#fff;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.12);
+  --text:#1c1917;--text2:#6b6560;--text3:#9c9590;
+  --accent:#1e3a5f;--accent2:#2f5680;--accent-light:#dbeafe;
+  --amber:#92400e;--amber-light:#fef3c7;
+  --red:#991b1b;--red-light:#fee2e2;
+  --green:#2d5a27;--green-light:#eaf3e8;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overscroll-behavior:none}
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
+.topbar-brand{display:flex;align-items:center;gap:8px}
+.topbar-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-sub{font-size:11px;color:var(--text2);font-family:'DM Mono',monospace}
+.nav{display:flex;background:var(--surface);border-top:1px solid var(--border);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:50;box-shadow:0 -1px 3px rgba(0,0,0,0.06)}
+.nav-btn{flex:1;padding:8px 2px 10px;border:none;background:none;font-size:10px;font-family:'DM Sans',sans-serif;color:var(--text3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color 0.15s;font-weight:500}
+.nav-btn i{font-size:20px}
+.nav-btn.active{color:var(--accent)}
+.screens{flex:1;overflow-y:auto;padding-bottom:70px}
+.screen{display:none;padding:12px}
+.screen.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.card-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;font-family:'DM Mono',monospace}
+.stat-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.stat{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border)}
+.stat-label{font-size:10px;color:var(--text3);margin-bottom:3px;font-family:'DM Mono',monospace;font-weight:500}
+.stat-val{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.02em}
+.stat-val.blue{color:var(--accent)}.stat-val.amber{color:var(--amber)}.stat-val.green{color:var(--green)}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
+.form-group{margin-bottom:11px}
+.form-label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block;font-weight:500}
+select,input[type=number],input[type=text],input[type=date],input[type=time],input[type=month]{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);transition:border-color 0.15s}
+select:focus,input:focus{outline:none;border-color:var(--accent)}
+textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);resize:vertical}
+.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hint{font-size:11px;color:var(--accent);margin-top:3px;font-family:'DM Mono',monospace}
+.btn{width:100%;padding:11px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:4px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{transform:scale(0.98)}
+.btn:disabled{opacity:0.5;cursor:default}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--bg2);color:var(--text);border:1px solid var(--border2);margin-top:6px}
+.btn-success{background:#1D9E75;color:#fff;margin-top:6px}
+.btn-danger{background:var(--red-light);color:var(--red);border:1px solid rgba(153,27,27,0.2);margin-top:6px}
+.btn-row{display:flex;gap:8px}
+.btn-row .btn{margin-top:6px}
+.hist-item{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)}
+.hist-item:last-child{border-bottom:none}
+.hist-main{font-size:13px;font-weight:600;color:var(--text)}
+.hist-sub{font-size:11px;color:var(--text2);margin-top:2px;font-family:'DM Mono',monospace}
+.hist-val{font-size:13px;font-weight:600;color:var(--accent);white-space:nowrap}
+.hist-actions{display:flex;gap:4px;flex-shrink:0}
+.icon-btn{background:none;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:5px 6px;cursor:pointer;color:var(--text2);display:flex;align-items:center;transition:all 0.15s}
+.icon-btn:hover{background:var(--bg2)}
+.icon-btn.danger:hover{color:var(--red);border-color:rgba(153,27,27,0.3)}
+.alert{font-size:12px;padding:8px 11px;border-radius:var(--radius-sm);margin-bottom:8px;font-weight:500;display:flex;gap:6px;align-items:flex-start}
+.alert.warn{background:var(--amber-light);color:var(--amber)}
+.alert.ok{background:var(--green-light);color:var(--green)}
+.alert.info{background:var(--accent-light);color:var(--accent)}
+.divider{height:1px;background:var(--border);margin:8px 0}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{font-size:9px;color:var(--text3);font-weight:600;text-align:center;padding:0 2px 8px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;white-space:nowrap}
+.tbl th:first-child{text-align:left}
+.tbl td{padding:6px 2px;border-bottom:1px solid var(--border);color:var(--text);text-align:center;vertical-align:middle}
+.tbl td:first-child{text-align:left;font-weight:500;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.total-row td{font-weight:600;border-top:2px solid var(--border2)}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;font-family:'DM Mono',monospace}
+.badge.actif{background:var(--green-light);color:var(--green)}
+.badge.id{background:var(--bg2);color:var(--text2)}
+.entreprise-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:8px}
+.entreprise-row:last-child{border-bottom:none}
+.entreprise-info{flex:1;min-width:0}
+.entreprise-nom{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entreprise-detail{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px;color:var(--text2);font-size:13px}
+.spinner{width:28px;height:28px;border:2px solid var(--bg3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:var(--shadow-md);max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.offline-banner{background:var(--amber);color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:500;display:none}
+.offline-banner.show{display:block}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:360px;box-shadow:var(--shadow-md);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
+.modal-body{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+.modal-actions{display:flex;gap:8px}
+.modal-actions .btn{margin-top:0;flex:1}
+</style>
 </head>
 <body>
-
-  <!-- ÉCRAN : CONNEXION -->
-  <div id="screen-login" class="screen active">
-    <div class="login-card">
-      <div class="app-logo">🌾</div>
-      <h1>HorairesAgri</h1>
-      <p class="subtitle">Suivi des heures agricoles</p>
-      <div class="form-group">
-        <label for="input-exploitation">ID Exploitation</label>
-        <input type="text" id="input-exploitation" placeholder="ex: GAEC-MARTIN-01" autocomplete="off" />
+<div class="app">
+  <div class="offline-banner" id="offline-banner">📵 Hors ligne — synchronisation à la reconnexion</div>
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">⏱️</div>
+      <div>
+        <div class="topbar-title">Pointage Horaires</div>
+        <div class="topbar-sub" id="topbar-sub">Chargement...</div>
       </div>
-      <div class="form-group">
-        <label for="input-salarie">ID Salarié</label>
-        <input type="text" id="input-salarie" placeholder="ex: SAL-DUPONT-01" autocomplete="off" />
-      </div>
-      <button class="btn-primary" id="btn-login">Se connecter</button>
-      <p class="login-note">Tes identifiants sont fournis par ton employeur.<br>La première connexion crée ton compte.</p>
     </div>
   </div>
 
-  <!-- ÉCRAN : PRINCIPAL -->
-  <div id="screen-main" class="screen">
-
-    <header class="app-header">
-      <div class="header-left">
-        <span class="app-icon">🌾</span>
-        <span class="app-name">HorairesAgri</span>
+  <div class="screens">
+    <!-- SAISIE DU JOUR -->
+    <div class="screen active" id="screen-saisie">
+      <div class="card" style="margin-top:4px">
+        <div class="card-title" id="form-title">Saisir une journée</div>
+        <div class="form-group"><label class="form-label">Date</label><input type="date" id="f-date"></div>
+        <div class="form-group" id="f-exploit-wrap" style="display:none"><label class="form-label">Exploitation</label><select id="f-exploit"></select></div>
+        <div class="card-title" style="margin-top:6px">Matin</div>
+        <div class="time-grid">
+          <div class="form-group"><label class="form-label">Arrivée</label><input type="time" id="f-arrivee-matin" oninput="recalc()"></div>
+          <div class="form-group"><label class="form-label">Fin de matinée</label><input type="time" id="f-fin-matin" oninput="recalc()"></div>
+        </div>
+        <div class="card-title">Après-midi</div>
+        <div class="time-grid">
+          <div class="form-group"><label class="form-label">Début</label><input type="time" id="f-debut-am" oninput="recalc()"></div>
+          <div class="form-group"><label class="form-label">Fin de journée</label><input type="time" id="f-fin-am" oninput="recalc()"></div>
+        </div>
+        <div class="hint" id="recalc-hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi » (ex : 12h00 / 12h00).</div>
+        <div class="form-group" style="margin-top:8px"><label class="form-label">Commentaire (optionnel)</label><textarea id="f-commentaire" rows="2" placeholder="ex : récolte parcelle Nord..."></textarea></div>
+        <div id="recap-jour" style="margin-top:6px"></div>
+        <button class="btn btn-primary" id="btn-save" onclick="saveJour()"><i class="ti ti-check"></i> Enregistrer</button>
+        <button class="btn btn-secondary" id="btn-cancel" style="display:none" onclick="cancelEdit()">Annuler la modification</button>
       </div>
-      <div class="header-right">
-        <span id="user-badge"></span>
-        <button class="btn-icon" id="btn-logout" title="Déconnexion">⏻</button>
-      </div>
-    </header>
-
-    <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="tab-today">Aujourd'hui</button>
-      <button class="tab-btn" data-tab="tab-history">Historique</button>
-      <button class="tab-btn" data-tab="tab-recap">Récap mensuel</button>
-    </nav>
-
-    <!-- ONGLET : AUJOURD'HUI -->
-    <div id="tab-today" class="tab-content active">
       <div class="card">
-        <div class="card-date" id="today-date"></div>
-
-        <div class="time-row">
-          <div class="form-group">
-            <label>Heure d'arrivée</label>
-            <input type="time" id="time-start" />
-          </div>
-          <div class="form-group">
-            <label>Heure de départ</label>
-            <input type="time" id="time-end" />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Pause déjeuner</label>
-          <div class="pause-selector">
-            <div class="pause-buttons">
-              <button class="pause-btn" data-minutes="0">Aucune</button>
-              <button class="pause-btn" data-minutes="15">15 min</button>
-              <button class="pause-btn active" data-minutes="30">30 min</button>
-              <button class="pause-btn" data-minutes="45">45 min</button>
-              <button class="pause-btn" data-minutes="60">1h</button>
-              <button class="pause-btn" data-minutes="90">1h30</button>
-            </div>
-            <div class="pause-custom">
-              <label for="pause-manual">Autre durée :</label>
-              <input type="number" id="pause-manual" placeholder="min" min="0" max="240" />
-              <span>min</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Note (optionnel)</label>
-          <input type="text" id="today-note" placeholder="ex: Travaux de taille, récolte..." />
-        </div>
-
-        <div class="total-display">
-          <span class="total-label">Temps travaillé</span>
-          <span class="total-value" id="total-value">–</span>
-        </div>
-
-        <button class="btn-primary" id="btn-save-today">Enregistrer la journée</button>
+        <div class="card-title">Historique récent</div>
+        <div id="hist-list"><div class="loading"><div class="spinner"></div>Chargement...</div></div>
       </div>
     </div>
 
-    <!-- ONGLET : HISTORIQUE -->
-    <div id="tab-history" class="tab-content">
-      <div class="history-header">
-        <button class="btn-nav" id="hist-prev">◀</button>
-        <span id="hist-month-label"></span>
-        <button class="btn-nav" id="hist-next">▶</button>
+    <!-- RECAP MENSUEL -->
+    <div class="screen" id="screen-recap">
+      <div class="card" style="margin-top:4px">
+        <div class="form-group"><label class="form-label">Mois</label><input type="month" id="r-mois" onchange="renderRecap()"></div>
+        <div class="form-group" id="r-exploit-wrap" style="display:none"><label class="form-label">Exploitation</label><select id="r-exploit" onchange="renderRecap()"></select></div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-label">Total travaillé</div><div class="stat-val blue" id="r-total">0h00</div></div>
+          <div class="stat"><div class="stat-label">Jours pointés</div><div class="stat-val" id="r-jours">0</div></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl"><thead><tr><th>Date</th><th>Arr.</th><th>Fin M.</th><th>Déb. AM</th><th>Fin AM</th><th>Pause</th><th>Total</th></tr></thead>
+          <tbody id="r-tbody"></tbody></table>
+        </div>
       </div>
-      <div id="history-list" class="history-list">
-        <p class="empty-msg">Chargement…</p>
+      <div class="card">
+        <div class="card-title">Envoyer le récapitulatif</div>
+        <div class="alert info"><i class="ti ti-info-circle"></i> Le PDF récapitule toutes les journées du mois pour votre patron.</div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="genererPDF(false)"><i class="ti ti-download"></i> Télécharger</button>
+          <button class="btn btn-primary" onclick="genererPDF(true)"><i class="ti ti-send"></i> Partager / Email</button>
+        </div>
       </div>
     </div>
 
-    <!-- ONGLET : RÉCAP -->
-    <div id="tab-recap" class="tab-content">
-      <div class="recap-header">
-        <button class="btn-nav" id="recap-prev">◀</button>
-        <span id="recap-month-label"></span>
-        <button class="btn-nav" id="recap-next">▶</button>
+    <!-- CONFIG -->
+    <div class="screen" id="screen-config">
+      <div class="card" style="margin-top:4px">
+        <div class="card-title">Mon profil salarié</div>
+        <div class="form-group"><label class="form-label">Nom</label><input type="text" id="c-nom-salarie" placeholder="ex : Jean Dupont"></div>
+        <div class="hint">ID salarié : <span id="c-id-salarie" style="font-weight:600"></span></div>
+        <button class="btn btn-primary" onclick="saveSalarieNom()"><i class="ti ti-check"></i> Enregistrer</button>
       </div>
-      <div id="recap-summary" class="recap-summary">
-        <div class="summary-stat">
-          <span class="stat-label">Jours travaillés</span>
-          <span class="stat-value" id="recap-days">–</span>
-        </div>
-        <div class="summary-stat">
-          <span class="stat-label">Total heures</span>
-          <span class="stat-value" id="recap-total">–</span>
-        </div>
+      <div class="card">
+        <div class="card-title">Exploitations</div>
+        <div id="entreprise-list"><div class="loading"><div class="spinner"></div>Chargement...</div></div>
       </div>
-      <div id="recap-table-container"></div>
-      <button class="btn-primary" id="btn-export-pdf">📄 Télécharger le PDF</button>
-    </div>
-
-  </div>
-
-  <!-- MODAL MODIFIER -->
-  <div id="modal-edit" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h2>Modifier la journée</h2>
-      <div class="modal-date" id="modal-date-label"></div>
-      <div class="time-row">
-        <div class="form-group">
-          <label>Arrivée</label>
-          <input type="time" id="modal-start" />
-        </div>
-        <div class="form-group">
-          <label>Départ</label>
-          <input type="time" id="modal-end" />
-        </div>
+      <div class="card">
+        <div class="card-title">Créer une entreprise</div>
+        <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="c-nom-entreprise" placeholder="ex : EARL Dupont"></div>
+        <button class="btn btn-success" onclick="creerEntreprise()"><i class="ti ti-plus"></i> Créer l'entreprise</button>
       </div>
-      <div class="form-group">
-        <label>Pause (minutes)</label>
-        <input type="number" id="modal-pause" min="0" max="240" />
-      </div>
-      <div class="form-group">
-        <label>Note</label>
-        <input type="text" id="modal-note" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn-danger" id="modal-delete">Supprimer</button>
-        <button class="btn-secondary" id="modal-cancel">Annuler</button>
-        <button class="btn-primary" id="modal-save">Enregistrer</button>
+      <div class="card">
+        <div class="card-title">À propos</div>
+        <div class="hint" style="color:var(--text2)">Vos données sont stockées en ligne (Firebase) et accessibles sur tous vos appareils via votre ID salarié.</div>
       </div>
     </div>
   </div>
 
-  <div id="toast" class="toast hidden"></div>
+  <div class="nav">
+    <button class="nav-btn active" id="nav-saisie" onclick="switchScreen('saisie')"><i class="ti ti-clock-hour-4"></i>Pointage</button>
+    <button class="nav-btn" id="nav-recap" onclick="switchScreen('recap')"><i class="ti ti-calendar-stats"></i>Récap mensuel</button>
+    <button class="nav-btn" id="nav-config" onclick="switchScreen('config')"><i class="ti ti-settings"></i>Config</button>
+  </div>
+</div>
 
-  <script type="module" src="js/firebase-config.js"></script>
-  <script type="module" src="js/app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
+<!-- ONBOARDING -->
+<div class="modal-overlay" id="onboard-overlay">
+  <div class="modal">
+    <div class="modal-title">👋 Bienvenue</div>
+    <div class="modal-body">Avant de commencer, entrez votre nom et le nom de l'exploitation pour laquelle vous travaillez. Vous pourrez tout modifier plus tard et ajouter d'autres exploitations.</div>
+    <div class="form-group"><label class="form-label">Votre nom</label><input type="text" id="ob-nom-salarie" placeholder="ex : Jean Dupont"></div>
+    <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="ob-nom-entreprise" placeholder="ex : EARL Dupont"></div>
+    <button class="btn btn-primary" onclick="finOnboarding()"><i class="ti ti-check"></i> Commencer</button>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMATION -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Confirmation</div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-danger" id="modal-confirm-btn" onclick="modalConfirm()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// ⚠️ Remplacez par la configuration de VOTRE projet Firebase (voir README.md)
+const firebaseConfig = {
+  apiKey: "VOTRE_API_KEY",
+  authDomain: "VOTRE_PROJET.firebaseapp.com",
+  projectId: "VOTRE_PROJET",
+  storageBucket: "VOTRE_PROJET.firebasestorage.app",
+  messagingSenderId: "VOTRE_SENDER_ID",
+  appId: "VOTRE_APP_ID"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+
+function attendreAuth() {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (user) => { if (user) resolve(user); });
+    signInAnonymously(auth).catch(reject);
+  });
+}
+
+window.addEventListener('online',()=>{document.getElementById('offline-banner').classList.remove('show');showToast('✓ Connexion rétablie');});
+window.addEventListener('offline',()=>{document.getElementById('offline-banner').classList.add('show');});
+
+// ── ÉTAT ──────────────────────────────────────────────────────
+let S = {
+  salarieId: localStorage.getItem('pt_salarieId') || null,
+  salarieNom: localStorage.getItem('pt_salarieNom') || '',
+  exploitationId: localStorage.getItem('pt_exploitationId') || null,
+  exploitations: [],
+  pointages: [],
+  editId: null,
+  unsubPointages: null,
+  modalAction: null
+};
+function genId(){ return 'id_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+// ── UTILITAIRES TEMPS ─────────────────────────────────────────
+function hmToMin(hm){ if(!hm) return null; const [h,m]=hm.split(':').map(Number); return h*60+m; }
+function minToHM(min){ if(min==null) return '—'; const h=Math.floor(min/60), m=min%60; return h+'h'+String(m).padStart(2,'0'); }
+function calcJournee(am,fm,dam,fam){
+  const a=hmToMin(am), f=hmToMin(fm), d=hmToMin(dam), g=hmToMin(fam);
+  let totalMatin=0, totalAM=0, pause=0;
+  if(a!=null && f!=null && f>=a) totalMatin=f-a;
+  if(d!=null && g!=null && g>=d) totalAM=g-d;
+  if(f!=null && d!=null && d>=f) pause=d-f;
+  const total=totalMatin+totalAM;
+  return {pause,total};
+}
+function fmtDate(iso){ const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'}); }
+
+// ── INIT ──────────────────────────────────────────────────────
+async function init(){
+  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('r-mois').value = new Date().toISOString().slice(0,7);
+  try{
+    await attendreAuth();
+  }catch(e){
+    showToast('Erreur de connexion : '+e.message);
+    document.getElementById('topbar-sub').textContent='Erreur connexion';
+    return;
+  }
+  if(!S.salarieId){
+    document.getElementById('onboard-overlay').classList.add('active');
+    return;
+  }
+  await chargerExploitations();
+  if(!S.exploitationId && S.exploitations.length>0){
+    S.exploitationId = S.exploitations[0].id;
+    localStorage.setItem('pt_exploitationId', S.exploitationId);
+  }
+  document.getElementById('c-nom-salarie').value = S.salarieNom;
+  document.getElementById('c-id-salarie').textContent = S.salarieId;
+  majTopbar();
+  renderExploitSelects();
+  renderEntreprises();
+  ecouterPointages();
+}
+
+function majTopbar(){
+  const exp = S.exploitations.find(e=>e.id===S.exploitationId);
+  document.getElementById('topbar-sub').textContent = S.salarieNom + (exp ? ' · '+exp.nom : '');
+}
+
+window.finOnboarding=async function(){
+  const nom = document.getElementById('ob-nom-salarie').value.trim();
+  const entNom = document.getElementById('ob-nom-entreprise').value.trim();
+  if(!nom || !entNom){ showToast('Merci de remplir les deux champs'); return; }
+  const salarieId = genId();
+  const exploitationId = genId();
+  try{
+    await setDoc(doc(db,'salaries',salarieId), { nom, createdAt: serverTimestamp() });
+    await setDoc(doc(db,'exploitations',exploitationId), { nom: entNom, salarieIds:[salarieId], createdAt: serverTimestamp() });
+    S.salarieId = salarieId; S.salarieNom = nom; S.exploitationId = exploitationId;
+    localStorage.setItem('pt_salarieId', salarieId);
+    localStorage.setItem('pt_salarieNom', nom);
+    localStorage.setItem('pt_exploitationId', exploitationId);
+    document.getElementById('onboard-overlay').classList.remove('active');
+    await chargerExploitations();
+    document.getElementById('c-nom-salarie').value = nom;
+    document.getElementById('c-id-salarie').textContent = salarieId;
+    majTopbar(); renderExploitSelects(); renderEntreprises(); ecouterPointages();
+    showToast('✓ Bienvenue, '+nom+' !');
+  }catch(e){ showToast('Erreur : '+e.message); }
+}
+
+async function chargerExploitations(){
+  const snap = await getDocs(query(collection(db,'exploitations'), where('salarieIds','array-contains',S.salarieId)));
+  S.exploitations = []; snap.forEach(d=>S.exploitations.push({id:d.id,...d.data()}));
+}
+
+function renderExploitSelects(){
+  const opts = S.exploitations.map(e=>`<option value="${e.id}" ${e.id===S.exploitationId?'selected':''}>${escapeHtml(e.nom)}</option>`).join('');
+  const multi = S.exploitations.length>1;
+  ['f-exploit','r-exploit'].forEach(id=>{ document.getElementById(id).innerHTML = opts; });
+  document.getElementById('f-exploit-wrap').style.display = multi ? 'block':'none';
+  document.getElementById('r-exploit-wrap').style.display = multi ? 'block':'none';
+}
+
+window.onSaisieExploitChange = function(){ S.exploitationId = document.getElementById('f-exploit').value; localStorage.setItem('pt_exploitationId', S.exploitationId); majTopbar(); }
+document.addEventListener('change', e=>{
+  if(e.target.id==='f-exploit'){ S.exploitationId = e.target.value; localStorage.setItem('pt_exploitationId', S.exploitationId); majTopbar(); }
+});
+
+window.creerEntreprise=async function(){
+  const nom = document.getElementById('c-nom-entreprise').value.trim();
+  if(!nom){ showToast('Entrez un nom d\'exploitation'); return; }
+  try{
+    const id = genId();
+    await setDoc(doc(db,'exploitations',id), { nom, salarieIds:[S.salarieId], createdAt: serverTimestamp() });
+    document.getElementById('c-nom-entreprise').value='';
+    await chargerExploitations();
+    renderExploitSelects(); renderEntreprises();
+    showToast('✓ Entreprise créée');
+  }catch(e){ showToast('Erreur : '+e.message); }
+}
+
+function renderEntreprises(){
+  const el = document.getElementById('entreprise-list');
+  if(S.exploitations.length===0){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucune exploitation pour le moment.</div>'; return; }
+  el.innerHTML = S.exploitations.map(e=>`
+    <div class="entreprise-row">
+      <div class="entreprise-info">
+        <div class="entreprise-nom">${escapeHtml(e.nom)} ${e.id===S.exploitationId?'<span class="badge actif">Active</span>':''}</div>
+        <div class="entreprise-detail">ID : ${e.id}</div>
+      </div>
+      <div class="hist-actions">
+        ${e.id!==S.exploitationId?`<button class="icon-btn" onclick="activerEntreprise('${e.id}')"><i class="ti ti-check"></i></button>`:''}
+        <button class="icon-btn danger" onclick="confirmerSuppressionEntreprise('${e.id}','${escapeHtml(e.nom)}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+window.activerEntreprise=function(id){ S.exploitationId=id; localStorage.setItem('pt_exploitationId',id); majTopbar(); renderExploitSelects(); renderEntreprises(); ecouterPointages(); showToast('✓ Exploitation active changée'); }
+window.confirmerSuppressionEntreprise=function(id,nom){
+  openModal('Supprimer l\'exploitation', `Supprimer « ${nom} » ? Les pointages liés resteront enregistrés mais ne seront plus visibles tant qu'aucune exploitation active n'est sélectionnée.`, async ()=>{
+    await deleteDoc(doc(db,'exploitations',id));
+    if(S.exploitationId===id) S.exploitationId=null;
+    await chargerExploitations();
+    if(!S.exploitationId && S.exploitations.length>0) S.exploitationId=S.exploitations[0].id;
+    localStorage.setItem('pt_exploitationId', S.exploitationId||'');
+    renderExploitSelects(); renderEntreprises(); majTopbar(); ecouterPointages();
+    showToast('✓ Exploitation supprimée');
+  });
+}
+
+window.saveSalarieNom=async function(){
+  const nom = document.getElementById('c-nom-salarie').value.trim();
+  if(!nom){ showToast('Entrez votre nom'); return; }
+  try{
+    await updateDoc(doc(db,'salaries',S.salarieId), { nom });
+    S.salarieNom = nom; localStorage.setItem('pt_salarieNom', nom);
+    majTopbar(); showToast('✓ Profil mis à jour');
+  }catch(e){ showToast('Erreur : '+e.message); }
+}
+
+// ── POINTAGES (CRUD + écoute temps réel) ─────────────────────
+function ecouterPointages(){
+  if(S.unsubPointages) S.unsubPointages();
+  if(!S.exploitationId){ S.pointages=[]; renderHistorique(); renderRecap(); return; }
+  const q = query(collection(db,'pointages'), where('salarieId','==',S.salarieId), where('exploitationId','==',S.exploitationId));
+  S.unsubPointages = onSnapshot(q, (snap)=>{
+    S.pointages = []; snap.forEach(d=>S.pointages.push({id:d.id,...d.data()}));
+    S.pointages.sort((a,b)=>b.date.localeCompare(a.date));
+    renderHistorique(); renderRecap();
+  }, (err)=>{ showToast('Erreur synchro : '+err.message); });
+}
+
+function recalc(){
+  const am=document.getElementById('f-arrivee-matin').value, fm=document.getElementById('f-fin-matin').value;
+  const dam=document.getElementById('f-debut-am').value, fam=document.getElementById('f-fin-am').value;
+  const {pause,total} = calcJournee(am,fm,dam,fam);
+  const el = document.getElementById('recap-jour');
+  if(!am && !fm && !dam && !fam){ el.innerHTML=''; return; }
+  el.innerHTML = `<div class="alert ok"><i class="ti ti-clock"></i> Pause : <strong>${minToHM(pause)}</strong> · Temps travaillé : <strong>${minToHM(total)}</strong></div>`;
+}
+
+window.saveJour=async function(){
+  if(!S.exploitationId){ showToast('Créez d\'abord une exploitation dans Config'); return; }
+  const date = document.getElementById('f-date').value;
+  const am=document.getElementById('f-arrivee-matin').value, fm=document.getElementById('f-fin-matin').value;
+  const dam=document.getElementById('f-debut-am').value, fam=document.getElementById('f-fin-am').value;
+  const commentaire = document.getElementById('f-commentaire').value.trim();
+  if(!date){ showToast('Sélectionnez une date'); return; }
+  if(!am && !fm && !dam && !fam){ showToast('Renseignez au moins une heure'); return; }
+  const {pause,total} = calcJournee(am,fm,dam,fam);
+  const exp = S.exploitations.find(e=>e.id===S.exploitationId);
+  const data = {
+    salarieId:S.salarieId, salarieNom:S.salarieNom,
+    exploitationId:S.exploitationId, exploitationNom: exp?exp.nom:'',
+    date, arriveeMatin:am||null, finMatin:fm||null, debutAM:dam||null, finAM:fam||null,
+    pauseMin:pause, totalMin:total, commentaire, updatedAt: serverTimestamp()
+  };
+  try{
+    const btn=document.getElementById('btn-save'); btn.disabled=true;
+    if(S.editId){ await updateDoc(doc(db,'pointages',S.editId), data); showToast('✓ Journée modifiée'); }
+    else { data.createdAt=serverTimestamp(); await addDoc(collection(db,'pointages'), data); showToast('✓ Journée enregistrée'); }
+    resetForm();
+    btn.disabled=false;
+  }catch(e){ showToast('Erreur : '+e.message); document.getElementById('btn-save').disabled=false; }
+}
+
+function resetForm(){
+  S.editId=null;
+  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  ['f-arrivee-matin','f-fin-matin','f-debut-am','f-fin-am','f-commentaire'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('recap-jour').innerHTML='';
+  document.getElementById('form-title').textContent='Saisir une journée';
+  document.getElementById('btn-cancel').style.display='none';
+}
+window.cancelEdit=resetForm;
+
+window.editJour=function(id){
+  const p = S.pointages.find(x=>x.id===id);
+  if(!p) return;
+  S.editId=id;
+  document.getElementById('f-date').value=p.date;
+  document.getElementById('f-arrivee-matin').value=p.arriveeMatin||'';
+  document.getElementById('f-fin-matin').value=p.finMatin||'';
+  document.getElementById('f-debut-am').value=p.debutAM||'';
+  document.getElementById('f-fin-am').value=p.finAM||'';
+  document.getElementById('f-commentaire').value=p.commentaire||'';
+  document.getElementById('form-title').textContent='Modifier la journée du '+fmtDate(p.date);
+  document.getElementById('btn-cancel').style.display='block';
+  recalc();
+  switchScreen('saisie');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+window.confirmerSuppressionJour=function(id,dateLabel){
+  openModal('Supprimer la journée', `Supprimer le pointage du ${dateLabel} ? Cette action est irréversible.`, async ()=>{
+    await deleteDoc(doc(db,'pointages',id));
+    showToast('✓ Journée supprimée');
+    if(S.editId===id) resetForm();
+  });
+}
+
+function renderHistorique(){
+  const el = document.getElementById('hist-list');
+  if(S.pointages.length===0){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucun pointage pour le moment.</div>'; return; }
+  el.innerHTML = S.pointages.slice(0,30).map(p=>`
+    <div class="hist-item">
+      <div style="flex:1;min-width:0">
+        <div class="hist-main">${fmtDate(p.date)}</div>
+        <div class="hist-sub">${p.arriveeMatin||'—'} → ${p.finMatin||'—'} · ${p.debutAM||'—'} → ${p.finAM||'—'} ${p.pauseMin?('· pause '+minToHM(p.pauseMin)):''}</div>
+        ${p.commentaire?`<div class="hist-sub" style="color:var(--text3)">${escapeHtml(p.commentaire)}</div>`:''}
+      </div>
+      <div class="hist-val">${minToHM(p.totalMin)}</div>
+      <div class="hist-actions">
+        <button class="icon-btn" onclick="editJour('${p.id}')"><i class="ti ti-pencil"></i></button>
+        <button class="icon-btn danger" onclick="confirmerSuppressionJour('${p.id}','${fmtDate(p.date)}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+// ── RÉCAP MENSUEL ─────────────────────────────────────────────
+function moisActuel(){ return document.getElementById('r-mois').value || new Date().toISOString().slice(0,7); }
+function pointagesDuMois(){
+  const mois = moisActuel();
+  return S.pointages.filter(p=>p.date.startsWith(mois)).sort((a,b)=>a.date.localeCompare(b.date));
+}
+window.renderRecap=function(){
+  const liste = pointagesDuMois();
+  const totalMin = liste.reduce((s,p)=>s+(p.totalMin||0),0);
+  document.getElementById('r-total').textContent = minToHM(totalMin);
+  document.getElementById('r-jours').textContent = liste.length;
+  const tb = document.getElementById('r-tbody');
+  if(liste.length===0){ tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:14px 4px">Aucune journée ce mois-ci</td></tr>'; return; }
+  tb.innerHTML = liste.map(p=>`<tr>
+    <td>${fmtDate(p.date)}</td><td>${p.arriveeMatin||'—'}</td><td>${p.finMatin||'—'}</td><td>${p.debutAM||'—'}</td><td>${p.finAM||'—'}</td><td>${minToHM(p.pauseMin)}</td><td><strong>${minToHM(p.totalMin)}</strong></td>
+  </tr>`).join('') + `<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td></td><td></td><td>${minToHM(totalMin)}</td></tr>`;
+}
+
+async function construirePDF(){
+  const liste = pointagesDuMois();
+  const exp = S.exploitations.find(e=>e.id===S.exploitationId);
+  const mois = moisActuel();
+  const [annee,m] = mois.split('-');
+  const nomMois = new Date(annee, m-1, 1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  const totalMin = liste.reduce((s,p)=>s+(p.totalMin||0),0);
+  const pdf = new jspdf.jsPDF();
+  const blue=[30,58,95]; const grey=[120,113,108];
+  pdf.setFillColor(...blue); pdf.rect(0,0,210,22,'F');
+  pdf.setTextColor(255,255,255); pdf.setFontSize(15); pdf.setFont('helvetica','bold');
+  pdf.text('Récapitulatif des horaires', 14, 14);
+  pdf.setFontSize(10); pdf.setFont('helvetica','normal');
+  pdf.text(nomMois.charAt(0).toUpperCase()+nomMois.slice(1), 196, 14, {align:'right'});
+  pdf.setTextColor(...grey); pdf.setFontSize(10); pdf.setFont('helvetica','normal');
+  pdf.text(`Salarié : ${S.salarieNom}  (ID : ${S.salarieId})`, 14, 30);
+  pdf.text(`Exploitation : ${exp?exp.nom:'—'}  (ID : ${exp?exp.id:'—'})`, 14, 36);
+  const rows = liste.map(p=>[fmtDate(p.date), p.arriveeMatin||'—', p.finMatin||'—', p.debutAM||'—', p.finAM||'—', minToHM(p.pauseMin), minToHM(p.totalMin)]);
+  rows.push(['TOTAL','','','','','',minToHM(totalMin)]);
+  pdf.autoTable({
+    startY:42, margin:{left:14,right:14},
+    head:[['Date','Arrivée','Fin matin','Début AM','Fin AM','Pause','Total']],
+    body:rows,
+    styles:{fontSize:9,cellPadding:2.5,halign:'center'},
+    columnStyles:{0:{halign:'left'}},
+    headStyles:{fillColor:blue,textColor:[255,255,255],fontStyle:'bold',fontSize:8.5},
+    didParseCell:(d)=>{ if(d.row.index===rows.length-1){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[219,234,254];} }
+  });
+  let y = pdf.lastAutoTable.finalY + 14;
+  pdf.setTextColor(...grey); pdf.setFontSize(9);
+  pdf.text('Signature salarié :', 14, y); pdf.line(45,y,95,y);
+  pdf.text('Signature employeur :', 115, y); pdf.line(150,y,196,y);
+  const pageCount = pdf.internal.getNumberOfPages();
+  for(let i=1;i<=pageCount;i++){ pdf.setPage(i); pdf.setTextColor(...grey); pdf.setFontSize(7);
+    pdf.text(`Pointage ${nomMois} · ${S.salarieNom} · Page ${i}/${pageCount}`, 105, 290, {align:'center'}); }
+  const filename = `Pointage_${mois}_${(S.salarieNom||'salarie').replace(/\\s+/g,'_')}.pdf`;
+  return { pdf, filename, nomMois };
+}
+
+window.genererPDF=async function(partager){
+  if(pointagesDuMois().length===0){ showToast('Aucune journée à exporter ce mois-ci'); return; }
+  try{
+    const { pdf, filename, nomMois } = await construirePDF();
+    if(partager && navigator.canShare && navigator.share){
+      const blob = pdf.output('blob');
+      const file = new File([blob], filename, {type:'application/pdf'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({ files:[file], title:'Récapitulatif horaires', text:`Récapitulatif des horaires — ${nomMois}` });
+        return;
+      }
     }
-  </script>
+    if(partager){
+      pdf.save(filename);
+      const sujet = encodeURIComponent('Récapitulatif des horaires - '+nomMois);
+      const corps = encodeURIComponent(`Bonjour,\\n\\nVeuillez trouver ci-joint (fichier téléchargé : ${filename}) mon récapitulatif d'horaires pour ${nomMois}.\\n\\nMerci de penser à joindre le fichier PDF téléchargé avant l'envoi.\\n\\nCordialement,\\n${S.salarieNom}`);
+      window.location.href = `mailto:?subject=${sujet}&body=${corps}`;
+      showToast('PDF téléchargé — pensez à le joindre à l\'email');
+    } else {
+      pdf.save(filename);
+      showToast('✓ PDF téléchargé');
+    }
+  }catch(e){ showToast('Erreur génération PDF : '+e.message); }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+window.switchScreen=function(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='recap') renderRecap();
+}
+
+// ── MODAL CONFIRMATION GÉNÉRIQUE ───────────────────────────────
+function openModal(title,body,action){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').textContent=body;
+  S.modalAction=action;
+  document.getElementById('modal-overlay').classList.add('active');
+}
+window.closeModal=function(){ document.getElementById('modal-overlay').classList.remove('active'); S.modalAction=null; }
+window.modalConfirm=async function(){ const a=S.modalAction; closeModal(); if(a) await a(); }
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+window.showToast=function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+
+init();
+</script>
 </body>
 </html>
