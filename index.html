@@ -45,6 +45,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .screen.active{display:block}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
 .card-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;font-family:'DM Mono',monospace}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.card-header .card-title{margin-bottom:0}
 .stat-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
 .stat{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border)}
 .stat-label{font-size:10px;color:var(--text3);margin-bottom:3px;font-family:'DM Mono',monospace;font-weight:500}
@@ -53,7 +55,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .stat-sub{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
 .form-group{margin-bottom:11px}
 .form-label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block;font-weight:500}
-select,input[type=number],input[type=text],input[type=date],input[type=time],input[type=month]{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);transition:border-color 0.15s}
+select,input[type=number],input[type=text],input[type=date],input[type=time],input[type=month],input[type=email],input[type=tel]{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);transition:border-color 0.15s}
 select:focus,input:focus{outline:none;border-color:var(--accent)}
 textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);resize:vertical}
 .time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -67,6 +69,7 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 .btn-danger{background:var(--red-light);color:var(--red);border:1px solid rgba(153,27,27,0.2);margin-top:6px}
 .btn-row{display:flex;gap:8px}
 .btn-row .btn{margin-top:6px}
+.btn-sm{width:auto;padding:6px 12px;font-size:12px;margin-top:0}
 .hist-item{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)}
 .hist-item:last-child{border-bottom:none}
 .hist-main{font-size:13px;font-weight:600;color:var(--text)}
@@ -103,13 +106,14 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .offline-banner{background:var(--amber);color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:500;display:none}
 .offline-banner.show{display:block}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.active{display:flex}
-.modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:360px;box-shadow:var(--shadow-md);max-height:90vh;overflow-y:auto}
+.modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:400px;box-shadow:var(--shadow-md);margin:auto}
 .modal-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
 .modal-body{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
 .modal-actions{display:flex;gap:8px}
 .modal-actions .btn{margin-top:0;flex:1}
+.section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px;font-family:'DM Mono',monospace;border-bottom:1px solid var(--border);padding-bottom:4px}
 </style>
 </head>
 <body>
@@ -142,7 +146,7 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
           <div class="form-group"><label class="form-label">Début</label><input type="time" id="f-debut-am" oninput="recalc()"></div>
           <div class="form-group"><label class="form-label">Fin de journée</label><input type="time" id="f-fin-am" oninput="recalc()"></div>
         </div>
-        <div class="hint" id="recalc-hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi » (ex : 12h00 / 12h00).</div>
+        <div class="hint" id="recalc-hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi ».</div>
         <div class="form-group" style="margin-top:8px"><label class="form-label">Commentaire (optionnel)</label><textarea id="f-commentaire" rows="2" placeholder="ex : récolte parcelle Nord..."></textarea></div>
         <div id="recap-jour" style="margin-top:6px"></div>
         <button class="btn btn-primary" id="btn-save" onclick="saveJour()"><i class="ti ti-check"></i> Enregistrer</button>
@@ -170,7 +174,7 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
       </div>
       <div class="card">
         <div class="card-title">Envoyer le récapitulatif</div>
-        <div class="alert info"><i class="ti ti-info-circle"></i> Le PDF récapitule toutes les journées du mois pour votre patron.</div>
+        <div class="alert info"><i class="ti ti-info-circle"></i> Le PDF récapitule toutes les journées du mois.</div>
         <div class="btn-row">
           <button class="btn btn-secondary" onclick="genererPDF(false)"><i class="ti ti-download"></i> Télécharger</button>
           <button class="btn btn-primary" onclick="genererPDF(true)"><i class="ti ti-send"></i> Partager / Email</button>
@@ -180,21 +184,31 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 
     <!-- CONFIG -->
     <div class="screen" id="screen-config">
+
+      <!-- PROFIL SALARIÉ -->
       <div class="card" style="margin-top:4px">
-        <div class="card-title">Mon profil salarié</div>
-        <div class="form-group"><label class="form-label">Nom</label><input type="text" id="c-nom-salarie" placeholder="ex : Jean Dupont"></div>
-        <div class="hint">ID salarié : <span id="c-id-salarie" style="font-weight:600"></span></div>
-        <button class="btn btn-primary" onclick="saveSalarieNom()"><i class="ti ti-check"></i> Enregistrer</button>
+        <div class="card-header">
+          <div class="card-title">Mon profil salarié</div>
+          <button class="btn btn-secondary btn-sm" onclick="ouvrirModalSalarie()"><i class="ti ti-pencil"></i> Modifier</button>
+        </div>
+        <div id="config-salarie-affichage">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
       </div>
+
+      <!-- EXPLOITATIONS -->
       <div class="card">
         <div class="card-title">Exploitations</div>
         <div id="entreprise-list"><div class="loading"><div class="spinner"></div>Chargement...</div></div>
       </div>
+
+      <!-- CRÉER UNE EXPLOITATION -->
       <div class="card">
-        <div class="card-title">Créer une entreprise</div>
+        <div class="card-title">Créer une nouvelle exploitation</div>
         <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="c-nom-entreprise" placeholder="ex : EARL Dupont"></div>
-        <button class="btn btn-success" onclick="creerEntreprise()"><i class="ti ti-plus"></i> Créer l'entreprise</button>
+        <button class="btn btn-success" onclick="creerEntreprise()"><i class="ti ti-plus"></i> Créer</button>
       </div>
+
       <div class="card">
         <div class="card-title">À propos</div>
         <div class="hint" style="color:var(--text2)">Vos données sont stockées en ligne (Firebase) et accessibles sur tous vos appareils via votre ID salarié.</div>
@@ -213,10 +227,67 @@ textarea{width:100%;padding:9px 11px;border:1px solid var(--border2);border-radi
 <div class="modal-overlay" id="onboard-overlay">
   <div class="modal">
     <div class="modal-title">👋 Bienvenue</div>
-    <div class="modal-body">Avant de commencer, entrez votre nom et le nom de l'exploitation pour laquelle vous travaillez. Vous pourrez tout modifier plus tard et ajouter d'autres exploitations.</div>
-    <div class="form-group"><label class="form-label">Votre nom</label><input type="text" id="ob-nom-salarie" placeholder="ex : Jean Dupont"></div>
+    <div class="modal-body">Entrez vos informations pour commencer. Vous pourrez tout modifier plus tard.</div>
+    <div class="section-label">Votre profil</div>
+    <div class="form-group"><label class="form-label">Votre nom complet</label><input type="text" id="ob-nom-salarie" placeholder="ex : Jean Dupont"></div>
+    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ob-adresse-salarie" placeholder="ex : 12 rue des Lilas"></div>
+    <div class="time-grid">
+      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ob-cp-salarie" placeholder="ex : 51000"></div>
+      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ob-ville-salarie" placeholder="ex : Châlons"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="ob-email-salarie" placeholder="ex : jean@email.fr"></div>
+    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ob-tel-salarie" placeholder="ex : 06 12 34 56 78"></div>
+    <div class="section-label">Exploitation</div>
     <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="ob-nom-entreprise" placeholder="ex : EARL Dupont"></div>
-    <button class="btn btn-primary" onclick="finOnboarding()"><i class="ti ti-check"></i> Commencer</button>
+    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ob-adresse-entreprise" placeholder="ex : Route de la Ferme"></div>
+    <div class="time-grid">
+      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ob-cp-entreprise" placeholder="ex : 51000"></div>
+      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ob-ville-entreprise" placeholder="ex : Châlons"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Nom du gérant</label><input type="text" id="ob-gerant-entreprise" placeholder="ex : Marie Dupont"></div>
+    <div class="form-group"><label class="form-label">Email du gérant</label><input type="email" id="ob-email-entreprise" placeholder="ex : marie@earl.fr"></div>
+    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ob-tel-entreprise" placeholder="ex : 03 26 12 34 56"></div>
+    <button class="btn btn-primary" onclick="finOnboarding()" style="margin-top:8px"><i class="ti ti-check"></i> Commencer</button>
+  </div>
+</div>
+
+<!-- MODAL MODIFIER SALARIÉ -->
+<div class="modal-overlay" id="modal-salarie-overlay">
+  <div class="modal">
+    <div class="modal-title">✏️ Modifier mon profil</div>
+    <div class="form-group"><label class="form-label">Nom complet</label><input type="text" id="ms-nom" placeholder="ex : Jean Dupont"></div>
+    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="ms-adresse" placeholder="ex : 12 rue des Lilas"></div>
+    <div class="time-grid">
+      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="ms-cp" placeholder="51000"></div>
+      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="ms-ville" placeholder="Châlons"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="ms-email" placeholder="jean@email.fr"></div>
+    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="ms-tel" placeholder="06 12 34 56 78"></div>
+    <div class="modal-actions" style="margin-top:8px">
+      <button class="btn btn-secondary" onclick="fermerModalSalarie()">Annuler</button>
+      <button class="btn btn-primary" onclick="sauvegarderSalarie()"><i class="ti ti-check"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MODIFIER EXPLOITATION -->
+<div class="modal-overlay" id="modal-exploit-overlay">
+  <div class="modal">
+    <div class="modal-title">✏️ Modifier l'exploitation</div>
+    <input type="hidden" id="me-id">
+    <div class="form-group"><label class="form-label">Nom de l'exploitation</label><input type="text" id="me-nom" placeholder="ex : EARL Dupont"></div>
+    <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="me-adresse" placeholder="ex : Route de la Ferme"></div>
+    <div class="time-grid">
+      <div class="form-group"><label class="form-label">Code postal</label><input type="text" id="me-cp" placeholder="51000"></div>
+      <div class="form-group"><label class="form-label">Ville</label><input type="text" id="me-ville" placeholder="Châlons"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Nom du gérant</label><input type="text" id="me-gerant" placeholder="ex : Marie Dupont"></div>
+    <div class="form-group"><label class="form-label">Email du gérant</label><input type="email" id="me-email" placeholder="marie@earl.fr"></div>
+    <div class="form-group"><label class="form-label">Téléphone</label><input type="tel" id="me-tel" placeholder="03 26 12 34 56"></div>
+    <div class="modal-actions" style="margin-top:8px">
+      <button class="btn btn-secondary" onclick="fermerModalExploit()">Annuler</button>
+      <button class="btn btn-primary" onclick="sauvegarderExploit()"><i class="ti ti-check"></i> Enregistrer</button>
+    </div>
   </div>
 </div>
 
@@ -239,7 +310,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// ⚠️ Remplacez par la configuration de VOTRE projet Firebase (voir README.md)
 const firebaseConfig = {
   apiKey: "AIzaSyBopo2N1KADeFnCwn46dP81t8zP_rjyOOM",
   authDomain: "horaires-agri.firebaseapp.com",
@@ -263,7 +333,6 @@ function attendreAuth() {
 window.addEventListener('online',()=>{document.getElementById('offline-banner').classList.remove('show');showToast('✓ Connexion rétablie');});
 window.addEventListener('offline',()=>{document.getElementById('offline-banner').classList.add('show');});
 
-// ── ÉTAT ──────────────────────────────────────────────────────
 let S = {
   salarieId: localStorage.getItem('pt_salarieId') || null,
   salarieNom: localStorage.getItem('pt_salarieNom') || '',
@@ -275,8 +344,6 @@ let S = {
   modalAction: null
 };
 function genId(){ return 'id_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
-
-// ── UTILITAIRES TEMPS ─────────────────────────────────────────
 function hmToMin(hm){ if(!hm) return null; const [h,m]=hm.split(':').map(Number); return h*60+m; }
 function minToHM(min){ if(min==null) return '—'; const h=Math.floor(min/60), m=min%60; return h+'h'+String(m).padStart(2,'0'); }
 function calcJournee(am,fm,dam,fam){
@@ -285,37 +352,27 @@ function calcJournee(am,fm,dam,fam){
   if(a!=null && f!=null && f>=a) totalMatin=f-a;
   if(d!=null && g!=null && g>=d) totalAM=g-d;
   if(f!=null && d!=null && d>=f) pause=d-f;
-  const total=totalMatin+totalAM;
-  return {pause,total};
+  return {pause, total:totalMatin+totalAM};
 }
 function fmtDate(iso){ const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'}); }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+window.showToast=function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
 
-// ── INIT ──────────────────────────────────────────────────────
+// ── INIT ────────────────────────────────────────────────────
 async function init(){
   document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('r-mois').value = new Date().toISOString().slice(0,7);
-  try{
-    await attendreAuth();
-  }catch(e){
-    showToast('Erreur de connexion : '+e.message);
-    document.getElementById('topbar-sub').textContent='Erreur connexion';
-    return;
-  }
+  try{ await attendreAuth(); }
+  catch(e){ showToast('Erreur connexion : '+e.message); document.getElementById('topbar-sub').textContent='Erreur connexion'; return; }
   if(!S.salarieId){
-    document.getElementById('onboard-overlay').classList.add('active');
-    return;
+    document.getElementById('onboard-overlay').classList.add('active'); return;
   }
   await chargerExploitations();
   if(!S.exploitationId && S.exploitations.length>0){
     S.exploitationId = S.exploitations[0].id;
     localStorage.setItem('pt_exploitationId', S.exploitationId);
   }
-  document.getElementById('c-nom-salarie').value = S.salarieNom;
-  document.getElementById('c-id-salarie').textContent = S.salarieId;
-  majTopbar();
-  renderExploitSelects();
-  renderEntreprises();
-  ecouterPointages();
+  majTopbar(); renderExploitSelects(); renderEntreprises(); renderConfigSalarie(); ecouterPointages();
 }
 
 function majTopbar(){
@@ -323,28 +380,93 @@ function majTopbar(){
   document.getElementById('topbar-sub').textContent = S.salarieNom + (exp ? ' · '+exp.nom : '');
 }
 
+// ── ONBOARDING ───────────────────────────────────────────────
 window.finOnboarding=async function(){
   const nom = document.getElementById('ob-nom-salarie').value.trim();
   const entNom = document.getElementById('ob-nom-entreprise').value.trim();
-  if(!nom || !entNom){ showToast('Merci de remplir les deux champs'); return; }
+  if(!nom || !entNom){ showToast('Remplissez au moins votre nom et le nom de l\'exploitation'); return; }
   const salarieId = genId();
   const exploitationId = genId();
   try{
-    await setDoc(doc(db,'salaries',salarieId), { nom, createdAt: serverTimestamp() });
-    await setDoc(doc(db,'exploitations',exploitationId), { nom: entNom, salarieIds:[salarieId], createdAt: serverTimestamp() });
-    S.salarieId = salarieId; S.salarieNom = nom; S.exploitationId = exploitationId;
+    await setDoc(doc(db,'salaries',salarieId), {
+      nom,
+      adresse: document.getElementById('ob-adresse-salarie').value.trim(),
+      cp: document.getElementById('ob-cp-salarie').value.trim(),
+      ville: document.getElementById('ob-ville-salarie').value.trim(),
+      email: document.getElementById('ob-email-salarie').value.trim(),
+      tel: document.getElementById('ob-tel-salarie').value.trim(),
+      createdAt: serverTimestamp()
+    });
+    await setDoc(doc(db,'exploitations',exploitationId), {
+      nom: entNom,
+      adresse: document.getElementById('ob-adresse-entreprise').value.trim(),
+      cp: document.getElementById('ob-cp-entreprise').value.trim(),
+      ville: document.getElementById('ob-ville-entreprise').value.trim(),
+      gerant: document.getElementById('ob-gerant-entreprise').value.trim(),
+      email: document.getElementById('ob-email-entreprise').value.trim(),
+      tel: document.getElementById('ob-tel-entreprise').value.trim(),
+      salarieIds:[salarieId], createdAt: serverTimestamp()
+    });
+    S.salarieId=salarieId; S.salarieNom=nom; S.exploitationId=exploitationId;
     localStorage.setItem('pt_salarieId', salarieId);
     localStorage.setItem('pt_salarieNom', nom);
     localStorage.setItem('pt_exploitationId', exploitationId);
     document.getElementById('onboard-overlay').classList.remove('active');
     await chargerExploitations();
-    document.getElementById('c-nom-salarie').value = nom;
-    document.getElementById('c-id-salarie').textContent = salarieId;
-    majTopbar(); renderExploitSelects(); renderEntreprises(); ecouterPointages();
+    majTopbar(); renderExploitSelects(); renderEntreprises(); renderConfigSalarie(); ecouterPointages();
     showToast('✓ Bienvenue, '+nom+' !');
   }catch(e){ showToast('Erreur : '+e.message); }
 }
 
+// ── CONFIG SALARIÉ (affichage + modal) ───────────────────────
+async function renderConfigSalarie(){
+  if(!S.salarieId){ return; }
+  const snap = await getDoc(doc(db,'salaries',S.salarieId));
+  const d = snap.exists() ? snap.data() : {};
+  const el = document.getElementById('config-salarie-affichage');
+  el.innerHTML = `
+    <div style="font-size:14px;font-weight:600;color:var(--text)">${escapeHtml(d.nom||'—')}</div>
+    ${d.adresse?`<div style="font-size:12px;color:var(--text2);margin-top:3px">${escapeHtml(d.adresse)}</div>`:''}
+    ${(d.cp||d.ville)?`<div style="font-size:12px;color:var(--text2)">${escapeHtml((d.cp||'')+' '+(d.ville||''))}</div>`:''}
+    ${d.email?`<div style="font-size:12px;color:var(--text2)">📧 ${escapeHtml(d.email)}</div>`:''}
+    ${d.tel?`<div style="font-size:12px;color:var(--text2)">📞 ${escapeHtml(d.tel)}</div>`:''}
+  `;
+}
+
+window.ouvrirModalSalarie=async function(){
+  if(!S.salarieId) return;
+  const snap = await getDoc(doc(db,'salaries',S.salarieId));
+  const d = snap.exists() ? snap.data() : {};
+  document.getElementById('ms-nom').value = d.nom||'';
+  document.getElementById('ms-adresse').value = d.adresse||'';
+  document.getElementById('ms-cp').value = d.cp||'';
+  document.getElementById('ms-ville').value = d.ville||'';
+  document.getElementById('ms-email').value = d.email||'';
+  document.getElementById('ms-tel').value = d.tel||'';
+  document.getElementById('modal-salarie-overlay').classList.add('active');
+}
+window.fermerModalSalarie=function(){ document.getElementById('modal-salarie-overlay').classList.remove('active'); }
+
+window.sauvegarderSalarie=async function(){
+  const nom = document.getElementById('ms-nom').value.trim();
+  if(!nom){ showToast('Le nom est obligatoire'); return; }
+  try{
+    await updateDoc(doc(db,'salaries',S.salarieId), {
+      nom,
+      adresse: document.getElementById('ms-adresse').value.trim(),
+      cp: document.getElementById('ms-cp').value.trim(),
+      ville: document.getElementById('ms-ville').value.trim(),
+      email: document.getElementById('ms-email').value.trim(),
+      tel: document.getElementById('ms-tel').value.trim(),
+    });
+    S.salarieNom = nom;
+    localStorage.setItem('pt_salarieNom', nom);
+    fermerModalSalarie(); majTopbar(); renderConfigSalarie();
+    showToast('✓ Profil mis à jour');
+  }catch(e){ showToast('Erreur : '+e.message); }
+}
+
+// ── EXPLOITATIONS ────────────────────────────────────────────
 async function chargerExploitations(){
   const snap = await getDocs(query(collection(db,'exploitations'), where('salarieIds','array-contains',S.salarieId)));
   S.exploitations = []; snap.forEach(d=>S.exploitations.push({id:d.id,...d.data()}));
@@ -358,42 +480,76 @@ function renderExploitSelects(){
   document.getElementById('r-exploit-wrap').style.display = multi ? 'block':'none';
 }
 
-window.onSaisieExploitChange = function(){ S.exploitationId = document.getElementById('f-exploit').value; localStorage.setItem('pt_exploitationId', S.exploitationId); majTopbar(); }
-document.addEventListener('change', e=>{
-  if(e.target.id==='f-exploit'){ S.exploitationId = e.target.value; localStorage.setItem('pt_exploitationId', S.exploitationId); majTopbar(); }
-});
-
-window.creerEntreprise=async function(){
-  const nom = document.getElementById('c-nom-entreprise').value.trim();
-  if(!nom){ showToast('Entrez un nom d\'exploitation'); return; }
-  try{
-    const id = genId();
-    await setDoc(doc(db,'exploitations',id), { nom, salarieIds:[S.salarieId], createdAt: serverTimestamp() });
-    document.getElementById('c-nom-entreprise').value='';
-    await chargerExploitations();
-    renderExploitSelects(); renderEntreprises();
-    showToast('✓ Entreprise créée');
-  }catch(e){ showToast('Erreur : '+e.message); }
-}
-
 function renderEntreprises(){
   const el = document.getElementById('entreprise-list');
-  if(S.exploitations.length===0){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucune exploitation pour le moment.</div>'; return; }
+  if(S.exploitations.length===0){ el.innerHTML='<div class="hint" style="color:var(--text2)">Aucune exploitation.</div>'; return; }
   el.innerHTML = S.exploitations.map(e=>`
     <div class="entreprise-row">
       <div class="entreprise-info">
         <div class="entreprise-nom">${escapeHtml(e.nom)} ${e.id===S.exploitationId?'<span class="badge actif">Active</span>':''}</div>
-        <div class="entreprise-detail">ID : ${e.id}</div>
+        ${e.gerant?`<div class="entreprise-detail">Gérant : ${escapeHtml(e.gerant)}</div>`:''}
+        ${(e.cp||e.ville)?`<div class="entreprise-detail">${escapeHtml((e.cp||'')+' '+(e.ville||''))}</div>`:''}
       </div>
       <div class="hist-actions">
-        ${e.id!==S.exploitationId?`<button class="icon-btn" onclick="activerEntreprise('${e.id}')"><i class="ti ti-check"></i></button>`:''}
+        <button class="icon-btn" onclick="ouvrirModalExploit('${e.id}')"><i class="ti ti-pencil"></i></button>
+        ${e.id!==S.exploitationId?`<button class="icon-btn" onclick="activerEntreprise('${e.id}')" title="Activer"><i class="ti ti-check"></i></button>`:''}
         <button class="icon-btn danger" onclick="confirmerSuppressionEntreprise('${e.id}','${escapeHtml(e.nom)}')"><i class="ti ti-trash"></i></button>
       </div>
     </div>`).join('');
 }
+
+window.ouvrirModalExploit=async function(id){
+  const snap = await getDoc(doc(db,'exploitations',id));
+  const d = snap.exists() ? snap.data() : {};
+  document.getElementById('me-id').value = id;
+  document.getElementById('me-nom').value = d.nom||'';
+  document.getElementById('me-adresse').value = d.adresse||'';
+  document.getElementById('me-cp').value = d.cp||'';
+  document.getElementById('me-ville').value = d.ville||'';
+  document.getElementById('me-gerant').value = d.gerant||'';
+  document.getElementById('me-email').value = d.email||'';
+  document.getElementById('me-tel').value = d.tel||'';
+  document.getElementById('modal-exploit-overlay').classList.add('active');
+}
+window.fermerModalExploit=function(){ document.getElementById('modal-exploit-overlay').classList.remove('active'); }
+
+window.sauvegarderExploit=async function(){
+  const id = document.getElementById('me-id').value;
+  const nom = document.getElementById('me-nom').value.trim();
+  if(!nom){ showToast('Le nom est obligatoire'); return; }
+  try{
+    await updateDoc(doc(db,'exploitations',id), {
+      nom,
+      adresse: document.getElementById('me-adresse').value.trim(),
+      cp: document.getElementById('me-cp').value.trim(),
+      ville: document.getElementById('me-ville').value.trim(),
+      gerant: document.getElementById('me-gerant').value.trim(),
+      email: document.getElementById('me-email').value.trim(),
+      tel: document.getElementById('me-tel').value.trim(),
+    });
+    fermerModalExploit();
+    await chargerExploitations();
+    majTopbar(); renderExploitSelects(); renderEntreprises();
+    showToast('✓ Exploitation mise à jour');
+  }catch(e){ showToast('Erreur : '+e.message); }
+}
+
+window.creerEntreprise=async function(){
+  const nom = document.getElementById('c-nom-entreprise').value.trim();
+  if(!nom){ showToast('Entrez un nom'); return; }
+  try{
+    const id = genId();
+    await setDoc(doc(db,'exploitations',id), { nom, salarieIds:[S.salarieId], createdAt: serverTimestamp() });
+    document.getElementById('c-nom-entreprise').value='';
+    await chargerExploitations(); renderExploitSelects(); renderEntreprises();
+    showToast('✓ Exploitation créée — pensez à compléter ses infos');
+  }catch(e){ showToast('Erreur : '+e.message); }
+}
+
 window.activerEntreprise=function(id){ S.exploitationId=id; localStorage.setItem('pt_exploitationId',id); majTopbar(); renderExploitSelects(); renderEntreprises(); ecouterPointages(); showToast('✓ Exploitation active changée'); }
+
 window.confirmerSuppressionEntreprise=function(id,nom){
-  openModal('Supprimer l\'exploitation', `Supprimer « ${nom} » ? Les pointages liés resteront enregistrés mais ne seront plus visibles tant qu'aucune exploitation active n'est sélectionnée.`, async ()=>{
+  openModal('Supprimer l\'exploitation', `Supprimer « ${nom} » ?`, async ()=>{
     await deleteDoc(doc(db,'exploitations',id));
     if(S.exploitationId===id) S.exploitationId=null;
     await chargerExploitations();
@@ -404,17 +560,7 @@ window.confirmerSuppressionEntreprise=function(id,nom){
   });
 }
 
-window.saveSalarieNom=async function(){
-  const nom = document.getElementById('c-nom-salarie').value.trim();
-  if(!nom){ showToast('Entrez votre nom'); return; }
-  try{
-    await updateDoc(doc(db,'salaries',S.salarieId), { nom });
-    S.salarieNom = nom; localStorage.setItem('pt_salarieNom', nom);
-    majTopbar(); showToast('✓ Profil mis à jour');
-  }catch(e){ showToast('Erreur : '+e.message); }
-}
-
-// ── POINTAGES (CRUD + écoute temps réel) ─────────────────────
+// ── POINTAGES ────────────────────────────────────────────────
 function ecouterPointages(){
   if(S.unsubPointages) S.unsubPointages();
   if(!S.exploitationId){ S.pointages=[]; renderHistorique(); renderRecap(); return; }
@@ -434,6 +580,7 @@ function recalc(){
   if(!am && !fm && !dam && !fam){ el.innerHTML=''; return; }
   el.innerHTML = `<div class="alert ok"><i class="ti ti-clock"></i> Pause : <strong>${minToHM(pause)}</strong> · Temps travaillé : <strong>${minToHM(total)}</strong></div>`;
 }
+window.recalc = recalc;
 
 window.saveJour=async function(){
   if(!S.exploitationId){ showToast('Créez d\'abord une exploitation dans Config'); return; }
@@ -455,8 +602,7 @@ window.saveJour=async function(){
     const btn=document.getElementById('btn-save'); btn.disabled=true;
     if(S.editId){ await updateDoc(doc(db,'pointages',S.editId), data); showToast('✓ Journée modifiée'); }
     else { data.createdAt=serverTimestamp(); await addDoc(collection(db,'pointages'), data); showToast('✓ Journée enregistrée'); }
-    resetForm();
-    btn.disabled=false;
+    resetForm(); btn.disabled=false;
   }catch(e){ showToast('Erreur : '+e.message); document.getElementById('btn-save').disabled=false; }
 }
 
@@ -471,8 +617,7 @@ function resetForm(){
 window.cancelEdit=resetForm;
 
 window.editJour=function(id){
-  const p = S.pointages.find(x=>x.id===id);
-  if(!p) return;
+  const p = S.pointages.find(x=>x.id===id); if(!p) return;
   S.editId=id;
   document.getElementById('f-date').value=p.date;
   document.getElementById('f-arrivee-matin').value=p.arriveeMatin||'';
@@ -482,9 +627,7 @@ window.editJour=function(id){
   document.getElementById('f-commentaire').value=p.commentaire||'';
   document.getElementById('form-title').textContent='Modifier la journée du '+fmtDate(p.date);
   document.getElementById('btn-cancel').style.display='block';
-  recalc();
-  switchScreen('saisie');
-  window.scrollTo({top:0,behavior:'smooth'});
+  recalc(); switchScreen('saisie'); window.scrollTo({top:0,behavior:'smooth'});
 }
 
 window.confirmerSuppressionJour=function(id,dateLabel){
@@ -513,7 +656,7 @@ function renderHistorique(){
     </div>`).join('');
 }
 
-// ── RÉCAP MENSUEL ─────────────────────────────────────────────
+// ── RÉCAP MENSUEL ────────────────────────────────────────────
 function moisActuel(){ return document.getElementById('r-mois').value || new Date().toISOString().slice(0,7); }
 function pointagesDuMois(){
   const mois = moisActuel();
@@ -531,6 +674,7 @@ window.renderRecap=function(){
   </tr>`).join('') + `<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td></td><td></td><td>${minToHM(totalMin)}</td></tr>`;
 }
 
+// ── PDF ───────────────────────────────────────────────────────
 async function construirePDF(){
   const liste = pointagesDuMois();
   const exp = S.exploitations.find(e=>e.id===S.exploitationId);
@@ -538,20 +682,47 @@ async function construirePDF(){
   const [annee,m] = mois.split('-');
   const nomMois = new Date(annee, m-1, 1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
   const totalMin = liste.reduce((s,p)=>s+(p.totalMin||0),0);
+  const salSnap = await getDoc(doc(db,'salaries',S.salarieId));
+  const sal = salSnap.exists() ? salSnap.data() : {};
   const pdf = new jspdf.jsPDF();
   const blue=[30,58,95]; const grey=[120,113,108];
+
+  // En-tête
   pdf.setFillColor(...blue); pdf.rect(0,0,210,22,'F');
   pdf.setTextColor(255,255,255); pdf.setFontSize(15); pdf.setFont('helvetica','bold');
   pdf.text('Récapitulatif des horaires', 14, 14);
   pdf.setFontSize(10); pdf.setFont('helvetica','normal');
   pdf.text(nomMois.charAt(0).toUpperCase()+nomMois.slice(1), 196, 14, {align:'right'});
-  pdf.setTextColor(...grey); pdf.setFontSize(10); pdf.setFont('helvetica','normal');
-  pdf.text(`Salarié : ${S.salarieNom}  (ID : ${S.salarieId})`, 14, 30);
-  pdf.text(`Exploitation : ${exp?exp.nom:'—'}  (ID : ${exp?exp.id:'—'})`, 14, 36);
+
+  // Infos salarié
+  let y = 30;
+  pdf.setTextColor(...grey); pdf.setFontSize(9);
+  pdf.setFont('helvetica','bold'); pdf.text('SALARIÉ', 14, y); y+=5;
+  pdf.setFont('helvetica','normal');
+  pdf.text(sal.nom||S.salarieNom||'—', 14, y); y+=4;
+  if(sal.adresse) { pdf.text(sal.adresse, 14, y); y+=4; }
+  if(sal.cp||sal.ville) { pdf.text(((sal.cp||'')+' '+(sal.ville||'')).trim(), 14, y); y+=4; }
+  if(sal.email) { pdf.text('Email : '+sal.email, 14, y); y+=4; }
+  if(sal.tel) { pdf.text('Tél : '+sal.tel, 14, y); y+=4; }
+
+  // Infos exploitation
+  let ye = 30;
+  pdf.setFont('helvetica','bold'); pdf.text('EXPLOITATION', 110, ye); ye+=5;
+  pdf.setFont('helvetica','normal');
+  if(exp){ 
+    pdf.text(exp.nom||'—', 110, ye); ye+=4;
+    if(exp.adresse) { pdf.text(exp.adresse, 110, ye); ye+=4; }
+    if(exp.cp||exp.ville) { pdf.text(((exp.cp||'')+' '+(exp.ville||'')).trim(), 110, ye); ye+=4; }
+    if(exp.gerant) { pdf.text('Gérant : '+exp.gerant, 110, ye); ye+=4; }
+    if(exp.email) { pdf.text('Email : '+exp.email, 110, ye); ye+=4; }
+    if(exp.tel) { pdf.text('Tél : '+exp.tel, 110, ye); ye+=4; }
+  }
+
+  const startY = Math.max(y, ye) + 4;
   const rows = liste.map(p=>[fmtDate(p.date), p.arriveeMatin||'—', p.finMatin||'—', p.debutAM||'—', p.finAM||'—', minToHM(p.pauseMin), minToHM(p.totalMin)]);
   rows.push(['TOTAL','','','','','',minToHM(totalMin)]);
   pdf.autoTable({
-    startY:42, margin:{left:14,right:14},
+    startY, margin:{left:14,right:14},
     head:[['Date','Arrivée','Fin matin','Début AM','Fin AM','Pause','Total']],
     body:rows,
     styles:{fontSize:9,cellPadding:2.5,halign:'center'},
@@ -559,15 +730,14 @@ async function construirePDF(){
     headStyles:{fillColor:blue,textColor:[255,255,255],fontStyle:'bold',fontSize:8.5},
     didParseCell:(d)=>{ if(d.row.index===rows.length-1){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[219,234,254];} }
   });
-  let y = pdf.lastAutoTable.finalY + 14;
+  let yf = pdf.lastAutoTable.finalY + 14;
   pdf.setTextColor(...grey); pdf.setFontSize(9);
-  pdf.text('Signature salarié :', 14, y); pdf.line(45,y,95,y);
-  pdf.text('Signature employeur :', 115, y); pdf.line(150,y,196,y);
+  pdf.text('Signature salarié :', 14, yf); pdf.line(50,yf,96,yf);
+  pdf.text('Signature employeur :', 110, yf); pdf.line(150,yf,196,yf);
   const pageCount = pdf.internal.getNumberOfPages();
   for(let i=1;i<=pageCount;i++){ pdf.setPage(i); pdf.setTextColor(...grey); pdf.setFontSize(7);
     pdf.text(`Pointage ${nomMois} · ${S.salarieNom} · Page ${i}/${pageCount}`, 105, 290, {align:'center'}); }
-  const filename = `Pointage_${mois}_${(S.salarieNom||'salarie').replace(/\\s+/g,'_')}.pdf`;
-  return { pdf, filename, nomMois };
+  return { pdf, filename:`Pointage_${mois}_${(S.salarieNom||'salarie').replace(/\s+/g,'_')}.pdf`, nomMois };
 }
 
 window.genererPDF=async function(partager){
@@ -578,33 +748,29 @@ window.genererPDF=async function(partager){
       const blob = pdf.output('blob');
       const file = new File([blob], filename, {type:'application/pdf'});
       if(navigator.canShare({files:[file]})){
-        await navigator.share({ files:[file], title:'Récapitulatif horaires', text:`Récapitulatif des horaires — ${nomMois}` });
-        return;
+        await navigator.share({ files:[file], title:'Récapitulatif horaires', text:`Récapitulatif — ${nomMois}` }); return;
       }
     }
+    pdf.save(filename);
     if(partager){
-      pdf.save(filename);
       const sujet = encodeURIComponent('Récapitulatif des horaires - '+nomMois);
-      const corps = encodeURIComponent(`Bonjour,\\n\\nVeuillez trouver ci-joint (fichier téléchargé : ${filename}) mon récapitulatif d'horaires pour ${nomMois}.\\n\\nMerci de penser à joindre le fichier PDF téléchargé avant l'envoi.\\n\\nCordialement,\\n${S.salarieNom}`);
+      const corps = encodeURIComponent(`Bonjour,\n\nVeuillez trouver ci-joint mon récapitulatif d'horaires pour ${nomMois}.\n\nCordialement,\n${S.salarieNom}`);
       window.location.href = `mailto:?subject=${sujet}&body=${corps}`;
       showToast('PDF téléchargé — pensez à le joindre à l\'email');
-    } else {
-      pdf.save(filename);
-      showToast('✓ PDF téléchargé');
-    }
-  }catch(e){ showToast('Erreur génération PDF : '+e.message); }
+    } else { showToast('✓ PDF téléchargé'); }
+  }catch(e){ showToast('Erreur PDF : '+e.message); }
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────
+// ── NAVIGATION ───────────────────────────────────────────────
 window.switchScreen=function(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
   if(name==='recap') renderRecap();
+  if(name==='config') renderConfigSalarie();
 }
 
-// ── MODAL CONFIRMATION GÉNÉRIQUE ───────────────────────────────
 function openModal(title,body,action){
   document.getElementById('modal-title').textContent=title;
   document.getElementById('modal-body').textContent=body;
@@ -613,9 +779,6 @@ function openModal(title,body,action){
 }
 window.closeModal=function(){ document.getElementById('modal-overlay').classList.remove('active'); S.modalAction=null; }
 window.modalConfirm=async function(){ const a=S.modalAction; closeModal(); if(a) await a(); }
-
-function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-window.showToast=function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
 
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
 
