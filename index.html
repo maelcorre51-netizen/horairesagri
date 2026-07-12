@@ -167,6 +167,8 @@ textarea{resize:vertical}
 .modal-body{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5}
 .modal-actions{display:flex;gap:8px} .modal-actions .btn{margin-top:0;flex:1}
 .hint{font-size:11px;color:var(--text2);margin-top:4px;line-height:1.4}
+.hm-picker{display:flex;gap:4px}
+.hm-picker select{flex:1;padding:9px 4px;text-align:center;font-size:14px}
 .section-sep{height:1px;background:var(--border);margin:12px 0}
 </style>
 </head>
@@ -232,13 +234,13 @@ textarea{resize:vertical}
         <div id="champs-travail">
           <div class="card-title" style="margin-top:6px">Matin</div>
           <div class="time-grid">
-            <div class="form-group"><label class="form-label">Arrivée</label><input type="time" id="f-arrivee-matin" oninput="recalc()"></div>
-            <div class="form-group"><label class="form-label">Fin de matinée</label><input type="time" id="f-fin-matin" oninput="recalc()"></div>
+            <div class="form-group"><label class="form-label">Arrivée</label><div class="hm-picker" id="f-arrivee-matin" data-onchange="recalc"></div></div>
+            <div class="form-group"><label class="form-label">Fin de matinée</label><div class="hm-picker" id="f-fin-matin" data-onchange="recalc"></div></div>
           </div>
           <div class="card-title">Après-midi</div>
           <div class="time-grid">
-            <div class="form-group"><label class="form-label">Début</label><input type="time" id="f-debut-am" oninput="recalc()"></div>
-            <div class="form-group"><label class="form-label">Fin de journée</label><input type="time" id="f-fin-am" oninput="recalc()"></div>
+            <div class="form-group"><label class="form-label">Début</label><div class="hm-picker" id="f-debut-am" data-onchange="recalc"></div></div>
+            <div class="form-group"><label class="form-label">Fin de journée</label><div class="hm-picker" id="f-fin-am" data-onchange="recalc"></div></div>
           </div>
           <div class="hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi ».</div>
           <div id="recap-jour" style="margin-top:8px"></div>
@@ -452,6 +454,46 @@ let S = {
   ecoleM: parseInt(localStorage.getItem('pt_ecole_m') || '0'),
 };
 
+// ── PICKERS HEURE:QUART ───────────────────────────────────────
+function creerPicker(containerId){
+  const el=document.getElementById(containerId);
+  if(!el||el.querySelector('select')) return;
+  const heures=Array.from({length:24},(_,i)=>i);
+  const mins=['00','15','30','45'];
+  const sh=document.createElement('select');
+  sh.className='sel-h';
+  sh.innerHTML='<option value="">H</option>'+heures.map(h=>`<option value="${String(h).padStart(2,'0')}">${String(h).padStart(2,'0')}</option>`).join('');
+  const sm=document.createElement('select');
+  sm.className='sel-m';
+  sm.innerHTML='<option value="">M</option>'+mins.map(m=>`<option value="${m}">${m}</option>`).join('');
+  const cb=el.dataset.onchange;
+  if(cb){ sh.addEventListener('change',()=>window[cb]()); sm.addEventListener('change',()=>window[cb]()); }
+  el.appendChild(sh); el.appendChild(sm);
+}
+function getPicker(containerId){
+  const el=document.getElementById(containerId);
+  if(!el) return '';
+  const h=el.querySelector('.sel-h')?.value;
+  const m=el.querySelector('.sel-m')?.value;
+  if(!h||!m) return '';
+  return h+':'+m;
+}
+function setPicker(containerId, hm){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  if(!hm){ el.querySelector('.sel-h').value=''; el.querySelector('.sel-m').value=''; return; }
+  const [h,m]=hm.split(':');
+  el.querySelector('.sel-h').value=h;
+  // Arrondir les minutes au quart le plus proche
+  const mNum=parseInt(m||'0');
+  const mArr=['00','15','30','45'];
+  const closest=mArr.reduce((a,b)=>Math.abs(parseInt(b)-mNum)<Math.abs(parseInt(a)-mNum)?b:a);
+  el.querySelector('.sel-m').value=closest;
+}
+function initPickers(){
+  ['f-arrivee-matin','f-fin-matin','f-debut-am','f-fin-am'].forEach(creerPicker);
+}
+
 // ── UTILS ─────────────────────────────────────────────────────
 function hmToMin(hm){ if(!hm) return null; const [h,m]=hm.split(':').map(Number); return h*60+m; }
 function minToHM(min){ if(!min&&min!==0) return '—'; const h=Math.floor(min/60),m=min%60; return h+'h'+String(m).padStart(2,'0'); }
@@ -517,6 +559,7 @@ onAuthStateChanged(auth, async (user)=>{
     if(!S.exploitationId&&S.exploitations.length>0){ S.exploitationId=S.exploitations[0].id; localStorage.setItem('pt_exploitationId',S.exploitationId); }
     document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
     document.getElementById('r-mois').value=new Date().toISOString().slice(0,7);
+    initPickers();
     // Charger config locale école
     document.getElementById('cfg-ecole-h').value=S.ecoleH||'';
     document.getElementById('cfg-ecole-m').value=S.ecoleM||'';
@@ -647,8 +690,8 @@ function ecouterPointages(){
 }
 
 window.recalc=function(){
-  const am=document.getElementById('f-arrivee-matin').value,fm=document.getElementById('f-fin-matin').value;
-  const dam=document.getElementById('f-debut-am').value,fam=document.getElementById('f-fin-am').value;
+  const am=getPicker('f-arrivee-matin'),fm=getPicker('f-fin-matin');
+  const dam=getPicker('f-debut-am'),fam=getPicker('f-fin-am');
   const {pause,total}=calcJournee(am,fm,dam,fam);
   const el=document.getElementById('recap-jour');
   if(!am&&!fm&&!dam&&!fam){el.innerHTML='';return;}
@@ -664,8 +707,8 @@ window.saveJour=async function(){
   let data={ uid:S.uid, salarieNom:S.salarieNom, exploitationId:S.exploitationId, exploitationNom:exp?exp.nom:'', date, type, commentaire:document.getElementById('f-commentaire').value.trim(), updatedAt:serverTimestamp() };
 
   if(type==='travail'){
-    const am=document.getElementById('f-arrivee-matin').value, fm=document.getElementById('f-fin-matin').value;
-    const dam=document.getElementById('f-debut-am').value, fam=document.getElementById('f-fin-am').value;
+    const am=getPicker('f-arrivee-matin'), fm=getPicker('f-fin-matin');
+    const dam=getPicker('f-debut-am'), fam=getPicker('f-fin-am');
     if(!am&&!fm&&!dam&&!fam){showToast('Renseignez au moins une heure',true);return;}
     const {pause,total}=calcJournee(am,fm,dam,fam);
     data={...data, arriveeMatin:am||null, finMatin:fm||null, debutAM:dam||null, finAM:fam||null, pauseMin:pause, totalMin:total};
@@ -684,7 +727,8 @@ window.saveJour=async function(){
 function resetForm(){
   S.editId=null;
   document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-  ['f-arrivee-matin','f-fin-matin','f-debut-am','f-fin-am','f-commentaire'].forEach(id=>document.getElementById(id).value='');
+  ['f-arrivee-matin','f-fin-matin','f-debut-am','f-fin-am'].forEach(id=>setPicker(id,''));
+  document.getElementById('f-commentaire').value='';
   document.getElementById('recap-jour').innerHTML='';
   document.getElementById('form-title').textContent='Saisir une journée';
   document.getElementById('btn-cancel').style.display='none';
@@ -697,10 +741,10 @@ window.editJour=function(id){
   S.editId=id;
   setType(p.type||'travail');
   document.getElementById('f-date').value=p.date;
-  document.getElementById('f-arrivee-matin').value=p.arriveeMatin||'';
-  document.getElementById('f-fin-matin').value=p.finMatin||'';
-  document.getElementById('f-debut-am').value=p.debutAM||'';
-  document.getElementById('f-fin-am').value=p.finAM||'';
+  setPicker('f-arrivee-matin', p.arriveeMatin||'');
+  setPicker('f-fin-matin', p.finMatin||'');
+  setPicker('f-debut-am', p.debutAM||'');
+  setPicker('f-fin-am', p.finAM||'');
   document.getElementById('f-commentaire').value=p.commentaire||'';
   if(p.motif) document.getElementById('f-motif').value=p.motif;
   document.getElementById('form-title').textContent='Modifier — '+fmtDate(p.date);
