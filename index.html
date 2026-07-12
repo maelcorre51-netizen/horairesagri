@@ -234,13 +234,13 @@ textarea{resize:vertical}
         <div id="champs-travail">
           <div class="card-title" style="margin-top:6px">Matin</div>
           <div class="time-grid">
-            <div class="form-group"><label class="form-label">Arrivée</label><div class="hm-picker" id="f-arrivee-matin" data-onchange="recalc"></div></div>
-            <div class="form-group"><label class="form-label">Fin de matinée</label><div class="hm-picker" id="f-fin-matin" data-onchange="recalc"></div></div>
+            <div class="form-group"><label class="form-label">Arrivée</label><div class="hm-picker"><select id="f-arrivee-matin-h" onchange="recalc()"><option value="">H</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select><select id="f-arrivee-matin-m" onchange="recalc()"><option value="">M</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div></div>
+            <div class="form-group"><label class="form-label">Fin de matinée</label><div class="hm-picker"><select id="f-fin-matin-h" onchange="recalc()"><option value="">H</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select><select id="f-fin-matin-m" onchange="recalc()"><option value="">M</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div></div>
           </div>
           <div class="card-title">Après-midi</div>
           <div class="time-grid">
-            <div class="form-group"><label class="form-label">Début</label><div class="hm-picker" id="f-debut-am" data-onchange="recalc"></div></div>
-            <div class="form-group"><label class="form-label">Fin de journée</label><div class="hm-picker" id="f-fin-am" data-onchange="recalc"></div></div>
+            <div class="form-group"><label class="form-label">Début</label><div class="hm-picker"><select id="f-debut-am-h" onchange="recalc()"><option value="">H</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select><select id="f-debut-am-m" onchange="recalc()"><option value="">M</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div></div>
+            <div class="form-group"><label class="form-label">Fin de journée</label><div class="hm-picker"><select id="f-fin-am-h" onchange="recalc()"><option value="">H</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select><select id="f-fin-am-m" onchange="recalc()"><option value="">M</option><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select></div></div>
           </div>
           <div class="hint">Pas de pause ? Mettez la même heure pour « Fin de matinée » et « Début après-midi ».</div>
           <div id="recap-jour" style="margin-top:8px"></div>
@@ -455,44 +455,26 @@ let S = {
 };
 
 // ── PICKERS HEURE:QUART ───────────────────────────────────────
-function creerPicker(containerId){
-  const el=document.getElementById(containerId);
-  if(!el||el.querySelector('select')) return;
-  const heures=Array.from({length:24},(_,i)=>i);
-  const mins=['00','15','30','45'];
-  const sh=document.createElement('select');
-  sh.className='sel-h';
-  sh.innerHTML='<option value="">H</option>'+heures.map(h=>`<option value="${String(h).padStart(2,'0')}">${String(h).padStart(2,'0')}</option>`).join('');
-  const sm=document.createElement('select');
-  sm.className='sel-m';
-  sm.innerHTML='<option value="">M</option>'+mins.map(m=>`<option value="${m}">${m}</option>`).join('');
-  const cb=el.dataset.onchange;
-  if(cb){ sh.addEventListener('change',()=>window[cb]()); sm.addEventListener('change',()=>window[cb]()); }
-  el.appendChild(sh); el.appendChild(sm);
-}
-function getPicker(containerId){
-  const el=document.getElementById(containerId);
-  if(!el) return '';
-  const h=el.querySelector('.sel-h')?.value;
-  const m=el.querySelector('.sel-m')?.value;
+// pickers directement en HTML
+function getPicker(fid){
+  const h=document.getElementById(fid+'-h')?.value;
+  const m=document.getElementById(fid+'-m')?.value;
   if(!h||!m) return '';
   return h+':'+m;
 }
-function setPicker(containerId, hm){
-  const el=document.getElementById(containerId);
-  if(!el) return;
-  if(!hm){ el.querySelector('.sel-h').value=''; el.querySelector('.sel-m').value=''; return; }
+function setPicker(fid, hm){
+  if(!hm){
+    const eh=document.getElementById(fid+'-h'); const em=document.getElementById(fid+'-m');
+    if(eh) eh.value=''; if(em) em.value=''; return;
+  }
   const [h,m]=hm.split(':');
-  el.querySelector('.sel-h').value=h;
-  // Arrondir les minutes au quart le plus proche
+  const eh=document.getElementById(fid+'-h'); if(eh) eh.value=h;
   const mNum=parseInt(m||'0');
   const mArr=['00','15','30','45'];
   const closest=mArr.reduce((a,b)=>Math.abs(parseInt(b)-mNum)<Math.abs(parseInt(a)-mNum)?b:a);
-  el.querySelector('.sel-m').value=closest;
+  const em=document.getElementById(fid+'-m'); if(em) em.value=closest;
 }
-function initPickers(){
-  ['f-arrivee-matin','f-fin-matin','f-debut-am','f-fin-am'].forEach(creerPicker);
-}
+
 
 // ── UTILS ─────────────────────────────────────────────────────
 function hmToMin(hm){ if(!hm) return null; const [h,m]=hm.split(':').map(Number); return h*60+m; }
@@ -559,7 +541,6 @@ onAuthStateChanged(auth, async (user)=>{
     if(!S.exploitationId&&S.exploitations.length>0){ S.exploitationId=S.exploitations[0].id; localStorage.setItem('pt_exploitationId',S.exploitationId); }
     document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
     document.getElementById('r-mois').value=new Date().toISOString().slice(0,7);
-    initPickers();
     // Charger config locale école
     document.getElementById('cfg-ecole-h').value=S.ecoleH||'';
     document.getElementById('cfg-ecole-m').value=S.ecoleM||'';
